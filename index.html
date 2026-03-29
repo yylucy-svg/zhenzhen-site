@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>真真 — 领导者 · 创作者 · 故事人</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Noto+Serif+SC:wght@300;400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0e0c0a;
+    --cream: #f5f0e8;
+    --gold: #c9933a;
+    --gold-light: #e8c47a;
+    --rust: #b54a2f;
+    --sage: #5a6e55;
+    --warm-gray: #8a7f72;
+    --paper: #faf7f2;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold-light);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    opacity: 0.5;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 28px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: normal;
+  }
+  nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(14,12,10,0.95), transparent);
+    pointer-events: none;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    position: relative;
+    z-index: 1;
+  }
+  .nav-links {
+    display: flex;
+    gap: 42px;
+    list-style: none;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 60px 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: -2%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(180px, 22vw, 380px);
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201, 147, 58, 0.12);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translateY(-50%) translateX(0); }
+    to { transform: translateY(-52%) translateX(-2%); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(80px, 12vw, 200px);
+    font-weight: 900;
+    line-height: 0.88;
+    color: var(--cream);
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-divider {
+    width: 80px;
+    height: 1px;
+    background: var(--gold);
+    margin: 40px 0;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-tagline {
+    font-size: clamp(16px, 2vw, 22px);
+    line-height: 1.7;
+    color: var(--warm-gray);
+    max-width: 560px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+  .hero-tagline strong {
+    color: var(--cream);
+    font-weight: 400;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    right: 60px;
+    bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .hero-scroll span {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION BASE ── */
+  section { position: relative; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 140px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  #about .section-label { color: var(--rust); }
+  #about .section-label::before { background: var(--rust); }
+
+  .about-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .about-headline em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .about-body {
+    font-size: 17px;
+    line-height: 1.9;
+    color: #4a3f35;
+  }
+  .about-body p + p { margin-top: 20px; }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(14,12,10,0.1);
+  }
+  .stat-item {}
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-number sup {
+    font-size: 24px;
+    color: var(--rust);
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-top: 8px;
+  }
+
+  /* ── PHILOSOPHY ── */
+  #philosophy {
+    background: var(--ink);
+    padding: 140px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .philosophy-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(201, 147, 58, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .philosophy-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4.5vw, 60px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--cream);
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .philosophy-quote::before {
+    content: '\201C';
+    font-size: 3em;
+    color: var(--gold);
+    position: absolute;
+    top: -0.3em;
+    left: -0.2em;
+    opacity: 0.6;
+    line-height: 1;
+  }
+  .philosophy-quote strong {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .philosophy-attr {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-top: 40px;
+  }
+
+  /* ── WORK / PILLARS ── */
+  #work {
+    background: var(--cream);
+    color: var(--ink);
+    padding: 140px 60px;
+  }
+  #work .section-label { color: var(--sage); }
+  #work .section-label::before { background: var(--sage); }
+
+  .work-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 80px;
+  }
+  .work-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 58px);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(14,12,10,0.08);
+  }
+  .pillar {
+    background: var(--cream);
+    padding: 56px 44px;
+    transition: background 0.4s ease, color 0.4s ease;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .pillar::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .pillar:hover { background: var(--ink); color: var(--cream); }
+  .pillar:hover::before { transform: scaleX(1); }
+  .pillar:hover .pillar-number { color: var(--gold); }
+  .pillar:hover .pillar-body { color: var(--warm-gray); }
+
+  .pillar-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--warm-gray);
+    margin-bottom: 28px;
+    transition: color 0.4s ease;
+  }
+  .pillar-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .pillar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 18px;
+  }
+  .pillar-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #5a4f45;
+    transition: color 0.4s ease;
+  }
+
+  /* ── TALK ── */
+  #talk {
+    background: #1a1208;
+    padding: 140px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 100px;
+    align-items: center;
+  }
+
+  .talk-label { margin-bottom: 32px; }
+  .talk-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4.5vw, 62px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--cream);
+    margin-bottom: 30px;
+  }
+  .talk-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .talk-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--gold-light);
+    margin-bottom: 24px;
+  }
+  .talk-body {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--warm-gray);
+  }
+
+  .talk-visual {
+    position: relative;
+    height: 480px;
+  }
+  .talk-card {
+    position: absolute;
+    background: rgba(201, 147, 58, 0.08);
+    border: 1px solid rgba(201, 147, 58, 0.2);
+    border-radius: 4px;
+    padding: 36px;
+  }
+  .talk-card-main {
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .talk-card-main .card-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .talk-card-main .card-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--cream);
+  }
+  .talk-card-main .card-quote strong {
+    color: var(--gold);
+    font-style: normal;
+  }
+  .card-decoration {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    border: 1px solid rgba(201, 147, 58, 0.15);
+    border-radius: 50%;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--ink);
+    padding: 160px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 147, 58, 0.08);
+  }
+  .contact-ring:nth-child(1) { width: 600px; height: 600px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .contact-ring:nth-child(2) { width: 900px; height: 900px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .contact-ring:nth-child(3) { width: 1200px; height: 1200px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+  .contact-inner { position: relative; z-index: 2; }
+  .contact-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 8vw, 110px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 0.95;
+    margin-bottom: 40px;
+  }
+  .contact-headline em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+  .contact-sub {
+    font-size: 17px;
+    color: var(--warm-gray);
+    max-width: 440px;
+    margin: 0 auto 56px;
+    line-height: 1.8;
+  }
+  .contact-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 40px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+    z-index: -1;
+  }
+  .contact-cta:hover { color: var(--ink); }
+  .contact-cta:hover::before { transform: scaleX(1); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080604;
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(201, 147, 58, 0.1);
+  }
+  .footer-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 24px 28px; }
+    .nav-links { display: none; }
+    #hero { padding: 0 28px 60px; }
+    #about { grid-template-columns: 1fr; padding: 80px 28px; gap: 48px; }
+    #work { padding: 80px 28px; }
+    .pillars { grid-template-columns: 1fr; }
+    #talk { grid-template-columns: 1fr; padding: 80px 28px; gap: 60px; }
+    .talk-visual { height: 320px; }
+    #philosophy { padding: 80px 28px; }
+    #contact { padding: 100px 28px; }
+    footer { flex-direction: column; gap: 16px; padding: 32px 28px; text-align: center; }
+    .work-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">真真</div>
+  <ul class="nav-links">
+    <li><a href="#about">关于</a></li>
+    <li><a href="#work">领域</a></li>
+    <li><a href="#talk">演讲</a></li>
+    <li><a href="writing.html">文字</a></li>
+    <li><a href="career.html">女将</a></li>
+    <li><a href="timeline.html">成长线</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-text">真真</div>
+  <div class="hero-eyebrow">领导者 · 创作者 · 故事人</div>
+  <h1 class="hero-name">
+    真真
+    <em>Zhēn Zhēn</em>
+  </h1>
+  <div class="hero-divider"></div>
+  <p class="hero-tagline">
+    用<strong>文字</strong>重塑边界，以<strong>故事</strong>穿透人心，<br>
+    在每一个勇敢的决定里，<strong>活出更真实的自己</strong>。
+  </p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>向下探索</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <div class="section-label reveal">01 · 关于我</div>
+    <h2 class="about-headline reveal">
+      真实是<br>
+      我的<em>底色</em>
+    </h2>
+    <div class="about-stats reveal">
+      <div class="stat-item">
+        <div class="stat-number">15<sup>+</sup></div>
+        <div class="stat-label">年领导经验</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">故事待讲述</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1</div>
+        <div class="stat-label">个始终如一的自己</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">勇</div>
+        <div class="stat-label">核心驱动力</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-body reveal">
+    <p>
+      我相信，真正的领导力不是凌驾于人之上，而是<strong>走在人前，点亮前路</strong>。从技术领域到战略决策，我在每一次转型中学会了一件事——选择自己，是最勇敢的事。
+    </p>
+    <p>
+      作为一名领导者，我擅长将复杂的战略转化为清晰的行动；作为一名创作者，我相信文字有力量改变人心；作为一个人，我始终在成长的路上，带着好奇、带着力量。
+    </p>
+    <p>
+      每一段经历——无论高光还是低谷——都是我故事的一部分。而这些故事，正是我最宝贵的财富。
+    </p>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+  <div class="philosophy-bg"></div>
+  <div class="section-label reveal" style="justify-content: center;">信念</div>
+  <blockquote class="philosophy-quote reveal">
+    选择自己，不是自私——<br>
+    那是你能为这个世界做的，<strong>最重要的一件事</strong>。
+  </blockquote>
+  <p class="philosophy-attr reveal">— 真真的人生哲学</p>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="work-header reveal">
+    <div>
+      <div class="section-label">02 · 核心领域</div>
+      <h2 class="work-headline">我所深耕的<br>三个维度</h2>
+    </div>
+  </div>
+  <div class="pillars">
+    <div class="pillar reveal">
+      <div class="pillar-number">01</div>
+      <span class="pillar-icon">⚡</span>
+      <h3 class="pillar-title">战略领导力</h3>
+      <p class="pillar-body">
+        将远见转化为执行，把团队的潜力激活为结果。在高速成长的科技行业中，我擅长建立信任、推动变革，让复杂的事情变得简单而有力。
+      </p>
+    </div>
+    <div class="pillar reveal">
+      <div class="pillar-number">02</div>
+      <span class="pillar-icon">✍️</span>
+      <h3 class="pillar-title">写作与创意表达</h3>
+      <p class="pillar-body">
+        文字是我思考的延伸。无论是战略备忘录、公开演讲，还是个人故事——我相信真实的声音最有力量，能穿越噪音，直抵人心。
+      </p>
+    </div>
+    <div class="pillar reveal">
+      <div class="pillar-number">03</div>
+      <span class="pillar-icon">🌟</span>
+      <h3 class="pillar-title">个人品牌与故事</h3>
+      <p class="pillar-body">
+        你的故事，就是你的名片。我帮助自己、也帮助他人，把人生经历提炼成清晰的叙事——让世界看见你最真实、最有力量的那一面。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- TALK -->
+<section id="talk">
+  <div>
+    <div class="section-label talk-label reveal">03 · 我的演讲</div>
+    <h2 class="talk-title reveal">
+      <em>Go Big:</em><br>
+      选择自己的<br>旅程
+    </h2>
+    <p class="talk-subtitle reveal">一次勇敢决定，改变一生轨迹</p>
+    <p class="talk-body reveal">
+      这不只是一场演讲，这是一次邀请——邀请你重新审视自己的选择，邀请你拥抱那些让你颤抖的决定，邀请你相信：<strong style="color: var(--gold-light);">你所有的经历，都是为了成就此刻的你</strong>。
+    </p>
+  </div>
+  <div class="talk-visual reveal">
+    <div class="talk-card talk-card-main">
+      <div class="card-eyebrow">TEDx Style Talk</div>
+      <p class="card-quote">
+        "Go Big: The Journey of<br>
+        Choosing Yourself —<br>
+        <strong>One Brave Decision</strong><br>
+        at a Time."
+      </p>
+      <div class="card-decoration"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORE -->
+<section id="writing" style="background: #1a1208; padding: 120px 60px;">
+  <div class="reveal" style="font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:16px;">
+    <span style="display:inline-block;width:40px;height:1px;background:var(--gold);flex-shrink:0;"></span>
+    探索更多
+  </div>
+  <h2 class="reveal" style="font-family:'Playfair Display',serif; font-size:clamp(36px,4.5vw,62px); font-weight:700; line-height:1.1; color:var(--cream); margin-bottom:64px;">
+    真真的<em style="color:var(--gold);font-style:italic;">世界</em>
+  </h2>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:rgba(201,147,58,0.1);">
+    <a href="writing.html" class="reveal" style="display:block; text-decoration:none; background:#1a1208; padding:52px 40px; border:1px solid rgba(201,147,58,0.1); transition:border-color 0.3s;"
+       onmouseover="this.style.borderColor='rgba(201,147,58,0.35)'" onmouseout="this.style.borderColor='rgba(201,147,58,0.1)'">
+      <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:16px;">文字 · Writing</div>
+      <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--cream); line-height:1.2; margin-bottom:16px;">向阳而生<br>我爱我</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--warm-gray);">散文、诗、宣言。写给自己，也写给你。</div>
+      <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); margin-top:28px; letter-spacing:0.15em;">进入 →</div>
+    </a>
+    <a href="career.html" class="reveal" style="display:block; text-decoration:none; background:#1a1208; padding:52px 40px; border:1px solid rgba(201,147,58,0.1); transition:border-color 0.3s;"
+       onmouseover="this.style.borderColor='rgba(201,147,58,0.35)'" onmouseout="this.style.borderColor='rgba(201,147,58,0.1)'">
+      <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--rust); margin-bottom:16px;">事业 · Career</div>
+      <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--cream); line-height:1.2; margin-bottom:16px;">真真<br>女将</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--warm-gray);">MIT · Toast · 从零到高管的故事。</div>
+      <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); margin-top:28px; letter-spacing:0.15em;">进入 →</div>
+    </a>
+    <a href="timeline.html" class="reveal" style="display:block; text-decoration:none; background:#1a1208; padding:52px 40px; border:1px solid rgba(201,147,58,0.1); transition:border-color 0.3s;"
+       onmouseover="this.style.borderColor='rgba(201,147,58,0.35)'" onmouseout="this.style.borderColor='rgba(201,147,58,0.1)'">
+      <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:16px;">成长 · Timeline</div>
+      <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--cream); line-height:1.2; margin-bottom:16px;">小土匪<br>成长线</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--warm-gray);">从未出生到此刻，每一年都是来处。</div>
+      <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); margin-top:28px; letter-spacing:0.15em;">进入 →</div>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-ring"></div>
+  <div class="contact-ring"></div>
+  <div class="contact-ring"></div>
+  <div class="contact-inner">
+    <div class="section-label reveal" style="justify-content: center;">04 · 联系我</div>
+    <h2 class="contact-headline reveal">
+      让我们
+      <em>连接</em>
+    </h2>
+    <p class="contact-sub reveal">
+      无论是演讲邀约、合作机会，还是你只是想分享一个故事——我在这里，认真倾听。
+    </p>
+    <a href="/cdn-cgi/l/email-protection#c9a1aca5a5a689b3a1aca7b3a1aca7e7aaa6a4" class="contact-cta reveal">
+      开启对话 →
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">真真</div>
+  <div class="footer-copy">© 2026 · 领导者 · 创作者 · 故事人</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        o

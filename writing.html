@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文字 · 真真 Lucy Wang</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Noto+Serif+SC:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #100e0b;
+    --cream: #f7f2ea;
+    --gold: #c4873a;
+    --gold-soft: #e2b97a;
+    --terra: #a84832;
+    --warm-mid: #7a6e62;
+    --sand: #d4c4a8;
+    --paper: #faf6ef;
+    --paper2: #f2ece0;
+    --paper3: #ede5d4;
+    --moss: #4e6349;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 7px; height: 7px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(196,135,58,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: left 0.12s ease, top 0.12s ease;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 26px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(250,246,239,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(196,135,58,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+  }
+  .nav-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+  }
+  .nav-back::before { content: '←'; font-size: 14px; }
+  .nav-back:hover { color: var(--gold); }
+
+  /* HERO */
+  #hero {
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 140px 64px 80px;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,135,58,0.05) 0%, transparent 70%);
+    top: 50%; left: 30%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(60px, 10vw, 140px);
+    font-weight: 300;
+    line-height: 0.9;
+    color: var(--cream);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+  .hero-title em {
+    display: block;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 0.45em;
+    letter-spacing: 0.06em;
+    margin-top: 14px;
+  }
+  .hero-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 1.8vw, 21px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--warm-mid);
+    max-width: 520px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TABLE OF CONTENTS */
+  #toc {
+    background: var(--paper3);
+    padding: 64px;
+    border-bottom: 1px solid rgba(196,135,58,0.1);
+  }
+  .toc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    margin-bottom: 36px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: rgba(196,135,58,0.08);
+  }
+  .toc-item {
+    background: var(--paper3);
+    padding: 28px 32px;
+    text-decoration: none;
+    display: block;
+    transition: background 0.3s;
+    border: 1px solid transparent;
+  }
+  .toc-item:hover { background: var(--paper); border-color: rgba(196,135,58,0.15); }
+  .toc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .toc-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .toc-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+  }
+
+  /* PIECE WRAPPER */
+  .piece {
+    padding: 120px 64px;
+    position: relative;
+  }
+  .piece-light { background: var(--paper); }
+  .piece-warm { background: var(--paper2); }
+  .piece-dark { background: var(--ink); }
+  .piece-deep { background: #0c0a08; }
+
+  .piece-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* PIECE HEADER */
+  .piece-header {
+    margin-bottom: 64px;
+    padding-bottom: 48px;
+  }
+  .piece-header.bordered {
+    border-bottom: 1px solid rgba(196,135,58,0.15);
+  }
+  .piece-header.bordered-light {
+    border-bottom: 1px solid rgba(196,135,58,0.08);
+  }
+
+  .piece-series {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .piece-series::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
+
+  .piece-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 5.5vw, 72px);
+    font-weight: 300;
+    line-height: 1.0;
+    margin-bottom: 14px;
+  }
+  .piece-title.light { color: var(--cream); }
+  .piece-title.dark { color: var(--ink); }
+  .piece-title em { font-style: italic; }
+  .piece-title.light em { color: var(--gold-soft); }
+  .piece-title.dark em { color: var(--terra); }
+
+  .piece-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .piece-subtitle.light { color: var(--warm-mid); }
+  .piece-subtitle.dark { color: #8a7f72; }
+
+  /* PROSE */
+  .prose {
+    font-size: 17px;
+    line-height: 2.15;
+    color: #3d342c;
+  }
+  .prose.on-dark { color: rgba(247,242,234,0.72); }
+  .prose p { margin-bottom: 28px; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose em { font-style: italic; color: var(--terra); }
+  .prose.on-dark em { color: var(--gold-soft); }
+
+  .pull-quote {
+    margin: 52px 0;
+    padding: 36px 48px;
+    border-left: 2px solid var(--gold);
+    background: rgba(196,135,58,0.04);
+  }
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 23px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 0;
+  }
+  .pull-quote cite {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    margin-top: 14px;
+    font-style: normal;
+  }
+  .pull-quote.on-dark { background: rgba(196,135,58,0.06); border-color: rgba(196,135,58,0.4); }
+  .pull-quote.on-dark p { color: var(--cream); }
+
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 52px 0;
+  }
+  .section-break::before, .section-break::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(196,135,58,0.15);
+  }
+  .section-break span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(196,135,58,0.4);
+    letter-spacing: 0.2em;
+  }
+
+  /* POEM */
+  .poem-body {
+    position: relative;
+  }
+  .stanza { margin-bottom: 48px; }
+  .stanza:last-child { margin-bottom: 0; }
+
+  .pline {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(19px, 2.4vw, 27px);
+    font-weight: 300;
+    line-height: 1.95;
+    color: var(--cream);
+  }
+  .pline em { font-style: italic; color: var(--gold-soft); }
+  .pline.muted { color: var(--warm-mid); }
+  .pline.strong { color: var(--sand); font-style: italic; }
+  .pline.gold { color: var(--gold-soft); }
+  .pline.indent { padding-left: 2.5em; }
+  .pline.indent2 { padding-left: 5em; }
+  .pline.space { display: block; height: 20px; }
+
+  .poem-deco {
+    position: absolute;
+    right: -30px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 240px;
+    font-weight: 300;
+    color: rgba(196,135,58,0.03);
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+
+  /* 我爱我 LIST */
+  .love-list {
+    position: relative;
+  }
+  .love-item {
+    display: flex;
+    gap: 28px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(196,135,58,0.08);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .love-item.visible { opacity: 1; transform: translateY(0); }
+  .love-item:last-child { border-bottom: none; }
+  .love-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(196,135,58,0.4);
+    padding-top: 4px;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: right;
+  }
+  .love-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 2vw, 22px);
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--cream);
+  }
+  .love-text em { font-style: italic; color: var(--gold-soft); }
+  .love-text .special { color: var(--gold); }
+
+  .love-closer {
+    text-align: center;
+    padding-top: 64px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(196,135,58,0.5);
+    letter-spacing: 0.05em;
+  }
+
+  /* FOOTER */
+  .piece-footer-nav {
+    background: var(--paper3);
+    padding: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(196,135,58,0.1);
+  }
+  .pfn-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+  }
+  .pfn-back::before { content: '←'; }
+  .pfn-back:hover { color: var(--gold); }
+  .pfn-sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--warm-mid);
+  }
+
+  footer {
+    background: var(--ink);
+    padding: 40px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(196,135,58,0.08);
+  }
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #3a3028;
+  }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    #hero { padding: 120px 28px 64px; }
+    #toc { padding: 48px 24px; }
+    .toc-grid { grid-template-columns: repeat(2, 1fr); }
+    .piece { padding: 80px 28px; }
+    .pull-quote { padding: 24px 24px; }
+    .piece-footer-nav { padding: 40px 28px; flex-direction: column; gap: 20px; }
+    footer { padding: 32px 28px; flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">真真</a>
+  <a href="index.html" class="nav-back">返回主页</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">文字 · Writing</div>
+  <h1 class="hero-title">
+    文字
+    <em>Words & Writing</em>
+  </h1>
+  <p class="hero-desc">
+    写给自己看的，也写给你看的。<br>
+    关于音乐、植物、月光，和那些说不清楚的事。
+  </p>
+</section>
+
+<!-- TOC -->
+<div id="toc">
+  <div class="toc-label">目录 · Contents</div>
+  <div class="toc-grid">
+    <a href="#part1" class="toc-item">
+      <div class="toc-num">01</div>
+      <div class="toc-name">向阳而生<br>Part I</div>
+      <div class="toc-type">散文</div>
+    </a>
+    <a href="#part2" class="toc-item">
+      <div class="toc-num">02</div>
+      <div class="toc-name">向阳而生<br>Part II</div>
+      <div class="toc-type">散文</div>
+    </a>
+    <a href="#yuanjian" class="toc-item">
+      <div class="toc-num">03</div>
+      <div class="toc-name">遇见</div>
+      <div class="toc-type">诗</div>
+    </a>
+    <a href="#woaivo" class="toc-item">
+      <div class="toc-num">04</div>
+      <div class="toc-name">我爱我愿意<br>并且能听到</div>
+      <div class="toc-type">宣言 · 一</div>
+    </a>
+    <a href="#woaivo2" class="toc-item">
+      <div class="toc-num">05</div>
+      <div class="toc-name">我爱我相信</div>
+      <div class="toc-type">宣言 · 二</div>
+    </a>
+    <a href="#woaivo3" class="toc-item">
+      <div class="toc-num">06</div>
+      <div class="toc-name">我爱我是谁</div>
+      <div class="toc-type">宣言 · 三</div>
+    </a>
+    <a href="#woaivo4" class="toc-item">
+      <div class="toc-num">07</div>
+      <div class="toc-name">我爱我走过<br>的路</div>
+      <div class="toc-type">宣言 · 四</div>
+    </a>
+    <a href="#ages" class="toc-item">
+      <div class="toc-num">08</div>
+      <div class="toc-name">我爱每一岁<br>的自己</div>
+      <div class="toc-type">成长史</div>
+    </a>
+  </div>
+</div>
+
+<!-- PART I -->
+<section id="part1" class="piece piece-light">
+  <div class="piece-inner">
+    <div class="piece-header bordered reveal">
+      <div class="piece-series">向阳而生 · 第一章</div>
+      <h2 class="piece-title dark">月光与<em>silence</em></h2>
+      <p class="piece-subtitle dark">Music is the silence between the notes — Debussy</p>
+    </div>
+
+    <div class="prose reveal">
+      <p>记得上次说到，在听自己弹的曲子的时候，觉得最有回味的是音和音之间的silence，好像那才是音乐本身。那天有人告诉我，好像有个著名的作曲家说过类似的话，一查，"Music is the silence between the notes" — Debussy. 我那段时间一直在弹的，就是德彪西的月光曲。我居然跟他老人家心灵相通了，直接懵逼了半响。</p>
+      <p>这个世界偶遇的快乐有很多种，这一种，是如此让人狂喜，而每每回味都是满满的幸福感。Clair de lune 这曲子里的每一个音都是那么珍贵，都不舍得弹，不舍得弹不好。就好像看到那年顾城去世后出版的最后的诗集，每一个字都是那么珍贵，不舍得读，不舍得读不好。</p>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>每一个音，都想用尽心力，而又无所在意——像在世界末日之前，最后一团香草冰淇淋，最后一杯gin tonic，不舍得品尝，但还是要赶快，不然就化了，就不冰了，就是现在。</p>
+    </div>
+
+    <div class="prose reveal">
+      <p>是一种喜欢到极致而产生的敬畏。胳膊上痒痒的，面对这场跨时空的际遇，身上跳跃的净是兴奋的小细胞。还好我弹的很差，给了我这么多机会，能因为每日精进而产生成就感和喜悦。</p>
+    </div>
+
+    <div class="section-break reveal"><span>·</span></div>
+
+    <div class="prose reveal">
+      <p>一首曲子，弹了一年多，慢慢有些小感悟。一开始是要熟练，然后要精通，形成肌肉记忆，你再用心里最柔软的地方去感悟，用尽你最聪明的小脑袋去理解。最后，也是最难的部分，就要把学到的东西忘掉，让这个音乐本身通过你。</p>
+      <p>像《箭术与禅心》里的一句话——"放开你自己，把你自己和你的一切都断然地抛弃，知道一无所有，只剩下一种不刻意的张力"。</p>
+      <p>有点像，你很努力的一锤子一锤子的去凿一个隧道，然后凿通了，你必须要走开，然后祈请神灵从这里通过。有个朋友说过，有点像木雕，就是看到一块木头，那个雕塑原来就在那里面，而你要做的，就是把多余的东西都去掉。</p>
+      <p>也有点像毕加索说过，他花了五年的时间画的很拉斐尔一样好，但花了30年的时间，把这些都忘掉。剩下来的东西，是美本身，如此洋溢的着自由，让人喜悦不已。一切都自然而然，而又是生命本身，因而永生。</p>
+    </div>
+
+    <div class="section-break reveal"><span>·</span></div>
+
+    <div class="prose reveal">
+      <p>学了两首曲子，都叫月光曲，请问是一个老师的命题作文吗？贝多芬和德彪西小朋友，请你们都作答一下。</p>
+      <p>贝多芬的月光曲，里面的感情，隐忍克制。在弹的时候，感觉自己是光脚走在洒满了月光的白桦林里，观自在菩萨行深，最后明心见性，找到原来的自己。而德彪西的月光曲，是撒满了月光的幽静湖面，偶尔泛起涟漪，最后你和湖水融为一体，成为月亮的孩子。真的是，浪漫的不要不要的。</p>
+    </div>
+  </div>
+</section>
+
+<!-- PART II -->
+<section id="part2" class="piece piece-warm">
+  <div class="piece-inner">
+    <div class="piece-header bordered reveal">
+      <div class="piece-series">向阳而生 · 第二章</div>
+      <h2 class="piece-title dark">植物、五线谱<br>与<em>20分钟</em></h2>
+      <p class="piece-subtitle dark">沾满了泥土的手，也是幸福的</p>
+    </div>
+
+    <div class="prose reveal">
+      <p>除了弹琴，另一个爱好，就是摆弄我的植物了吧。在琴键上的手是幸福的，沾满了泥土的手，也是幸福的。朋友来家里，说你的植物怎么养的那么好，土里加了什么东西。我说没有啊，我就是每天跟它们"说话"，不是真的说出声，就是路过的时候，用手摸摸它们的叶子，就像你摸摸小猫小狗的头，然后心里说一句，你好吗？要好好长大啊。</p>
+      <p>我也不记得什么时候该浇水，就伸手摸摸土壤，感觉谁渴了饿了。每次给它们都照顾了一遍之后，空气里好像会充斥着细微的幸福因子，好像它们都特别开心，都很兴奋的像小鸟一样在叽叽喳喳。Plants make people happy，I feel it but I really don't know why.</p>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>家里的采光其实不是特别好，我从日出起床研究一整天阳光在家里的轨迹，把植物放在阳光能关照到的地方，哪怕只是几个小时，也够了。它们要的都不多，一点点的关心和阳光，就能活——正如生命本身。</p>
+    </div>
+
+    <div class="prose reveal">
+      <p>照顾这些植物，让我对跟人相处、工作也有些感触。比如说，这柠檬树就是喜欢阳光和水，而仙人掌，水浇多了，就不开心了。而ZZ plant 你不用怎么管，它总是绿油油的。有些花一直不开，你也着急不来，只能等待是吧。</p>
+      <p>就像在工作里，每个人都不一样，你能做的，只能是用心发现每个人的特性，然后尊重它，照顾好它。以前我的确常常觉得别人都应该怎么样，我想去改变，改变不了就徒增很多烦恼。现在把精力多花在观察，体恤每个个体的不同，顺应这个特性，一旦发现方法不对，马上调整。你要做一件事情，往往能做的就仅仅是好好的种一颗种子，然后耐心的等待它发芽。这样一来，发现一切都顺了好多。</p>
+    </div>
+
+    <div class="section-break reveal"><span>·</span></div>
+
+    <div class="prose reveal">
+      <p>最后，今天是个值得纪念的日子——因为，<em>我学会认五线谱了！</em></p>
+      <p>说起来很有意思，初中学钢琴的时候，学了一下愣是没学会，之后就给自己下了定义，我是学不会的，我就是缺一根筋。像我相信地球是圆的一样，相信我学不会五线谱。后来这几年的钢琴，都是看视频背下来。无数次有人告诉我，很容易的，你可以的，我就是不信。</p>
+      <p>这次开始学大提琴，老师要求了，我一直在推脱。后来跟咱妈吐槽，她马上甩了几张图，还教我方法，我惊呆了——难道，你会五线谱？！我怎么不知道？！我心里开始不服气了，您60岁开始学钢琴，都能学会，我不能学不会吧。</p>
+      <p>从我心里决定选择勇敢，我要学，颤颤巍巍地让自己相信我也许能学会，到我能顺利把一整篇的谱子标出来，大概，用了20分钟的时间吧。（感谢学霸妈妈的鼓励和好方法）。20分钟！我这20年都一直坚信自己学不会。</p>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>所以，你如果有什么坚信自己学不会的事情，你不勇敢的去尝试，就真的，永远不会。给自己的保护壳一个出口，也许会有惊喜。</p>
+    </div>
+
+    <div class="prose reveal">
+      <p>刚刚跟着音乐把谱子看了一遍，居然都对上了。原来五线谱是流动的2D音乐啊，也太美了！以前觉得就是这么多杂乱无章的小蝌蚪，我恨不得他们都变成青蛙，然后我把他们爆炒牛蛙吃掉才好。现在一个个都像刚长出来的植物小芽，卷卷的，好可爱，都有那么多能量待发，那么多故事要讲，等着我去帮助他们长大，来到这个世界。</p>
+      <p>我期待着，跟他们一起，向阳而生。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 遇见 POEM -->
+<section id="yuanjian" class="piece piece-dark">
+  <div class="piece-inner">
+    <div class="piece-header bordered-light reveal">
+      <div class="piece-series" style="color:var(--gold-soft);">诗 · Poem</div>
+      <h2 class="piece-title light">遇<em>见</em></h2>
+    </div>
+
+    <div class="poem-body">
+      <div class="poem-deco">遇</div>
+
+      <div class="stanza reveal">
+        <span class="pline">一圆坨的月亮</span>
+        <span class="pline">像猫头鹰似的蜷在</span>
+        <span class="pline">松树的枝上</span>
+        <span class="pline muted">呼唤着它的同类</span>
+      </div>
+
+      <div class="stanza reveal">
+        <span class="pline">夜里的小河</span>
+        <span class="pline">起身离开河槽</span>
+        <span class="pline">漫散开梳洗了一天的长发</span>
+        <span class="pline gold">扭着晶莹剔透的身体</span>
+        <span class="pline">在森林里漫步</span>
+      </div>
+
+      <div class="stanza reveal">
+        <span class="pline">远处户人家的灯火</span>
+        <span class="pline">像猫咪困了的双眼</span>
+        <span class="pline muted indent">眯了又眯，带着距离</span>
+      </div>
+
+      <div class="stanza reveal">
+        <span class="pline strong">我惊恐的遇见</span>
+        <span class="pline strong">十三岁的自己</span>
+        <span class="pline" style="color:rgba(247,242,234,0.5); font-style:italic; padding-left:1.5em;">对不起，手中没有当年你给的自由</span>
+        <span class="pline muted indent2">羞愧难当</span>
+      </div>
+
+      <div class="stanza reveal">
+        <span class="pline muted">月亮飞离了枝桠</span>
+        <span class="pline muted">小河俯身卧下</span>
+        <span class="pline muted">猫咪逃离了屋顶</span>
+        <span class="pline space"></span>
+        <span class="pline gold indent">我像你</span>
+        <span class="pline gold indent">挥手告别</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 我爱我 -->
+<section id="woaivo" class="piece piece-deep">
+  <div class="piece-inner">
+    <div class="piece-header bordered-light reveal">
+      <div class="piece-series" style="color:var(--gold-soft);">宣言 · Manifesto</div>
+      <h2 class="piece-title light" style="font-size: clamp(28px, 4vw, 52px); line-height:1.2;">我爱我，愿意，<br>并且<em>能听到</em></h2>
+    </div>
+
+    <div class="love-list">
+      <div class="love-item">
+        <span class="love-num">01</span>
+        <span class="love-text">我爱我愿意并且能听到<em>聆听我的身体</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">02</span>
+        <span class="love-text">我爱我愿意并且听到我<em>每个年龄自己的故事和渴望</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">03</span>
+        <span class="love-text">我爱我愿意并听到<em>他人的没有说出口的话</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">04</span>
+        <span class="love-text">我爱我愿意并且听到 <span class="special">the silence between the notes</span></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">05</span>
+        <span class="love-text">我爱我愿意并且能听到<em>心碎的声音</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">06</span>
+        <span class="love-text">我爱我愿意并且能听到<em>星星的窃窃私语</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">07</span>
+        <span class="love-text">我爱我愿意并且能听到<em>风用树叶写的诗</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">08</span>
+        <span class="love-text">我爱我愿意并且能听到 <span class="special">God</span> 在光里在黑暗里发出的频率，他让我在心流里与过往伟大的灵魂<em>开party</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">09</span>
+        <span class="love-text">我爱我愿意打开我的身体、我的心、我的mind，来<em>倾听这个世界的广大</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">10</span>
+        <span class="love-text">我爱我愿意并且能听见<em>鲸鱼的歌声</em> — <span class="special">岁月如冰河，热望如鲸歌</span></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">11</span>
+        <span class="love-text">我爱我愿意并且听见<em>时间空间感消失时候的宁静与狂喜</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">12</span>
+        <span class="love-text">我爱我愿意并且听见<em>不同的灵魂的存在</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">13</span>
+        <span class="love-text">我爱我愿意并且听见<em>自己的欲望的呼喊</em>，并予以回应</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">14</span>
+        <span class="love-text">我爱我愿意并且听见我<em>第六感的 whisper</em>，并跟随它</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">15</span>
+        <span class="love-text">我爱我愿意并听见<span class="special">上帝给我的旨意</span> — 我要去建造他的圣殿</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">16</span>
+        <span class="love-text">我爱我愿意并听见<em>岁月的河流</em>，它时而宽广，时而蜿蜒</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">17</span>
+        <span class="love-text">我爱我愿意并且听见<em>四季交替</em> — 噼里啪啦的静电，和水汽丝拉拉离开土壤变成软乎乎的云朵</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">18</span>
+        <span class="love-text">我爱我愿意并且听见<em>小毛毛虫🐛在叶子上走路</em> — 听的震耳欲聋</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">19</span>
+        <span class="love-text">我爱我愿意并且听见<em>城市的脉搏</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">20</span>
+        <span class="love-text">我爱我愿意并且能听见<em>月光在湖水的那个角落写下的故事</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">21</span>
+        <span class="love-text">我爱我愿意并且能听见<em>黑夜如母亲般拥抱所有孤独</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">22</span>
+        <span class="love-text">我爱我愿意并且能听见<span class="special">希望吹响的号角</span></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">23</span>
+        <span class="love-text">我爱我愿意并且听见自己的哭喊 — <em>恐惧是升F，孤独是降B，悲伤是A调</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">24</span>
+        <span class="love-text">我爱我愿意并且能听见<em>妈妈的歌声</em> — 一首春天的《读你》</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">25</span>
+        <span class="love-text">我爱我愿意并且能听见<em>磁场相交汇，同频继而的共振</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">26</span>
+        <span class="love-text">我爱我愿意并且能听见<span class="special">自己魔性的大笑 😂</span></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">27</span>
+        <span class="love-text">我爱我愿意并且能听见<em>埃及沙漠里的风像个话精老爷爷</em>，从恐龙特工队一直讲到埃及版的甄嬛传说个没完</span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">28</span>
+        <span class="love-text">我爱我愿意并且能听见<em>骆驼对尖叫的女游客发牢骚的 grunting</em></span>
+      </div>
+      <div class="love-item">
+        <span class="love-num">29</span>
+        <span class="love-text">我爱我愿意并且能听见<em>沙漠里澎湃的生命力</em>，还有初雪落下的温柔与小心翼翼</span>
+      </div>
+      <div class="love-item" style="border-bottom:none;">
+        <span class="love-num">30</span>
+        <span class="love-text" style="font-size: clamp(22px, 3vw, 36px); color: var(--cream); letter-spacing: 0.05em;">我爱我愿意并且<span class="special">听见安静</span></span>
+      </div>
+    </div>
+
+    <div class="love-closer reveal">— 真真</div>
+  </div>
+</section>
+
+    <div class="love-closer reveal">— 真真</div>
+  </div>
+</section>
+
+<!-- 我爱我相信 -->
+<section id="woaivo2" class="piece" style="background:#0c0a08;">
+  <div class="piece-inner">
+    <div class="piece-header bordered-light reveal">
+      <div class="piece-series" style="color:var(--gold-soft);">宣言 · 二</div>
+      <h2 class="piece-title light" style="font-size:clamp(28px,4vw,52px);line-height:1.2;">我爱我，<em>相信</em></h2>
+      <p class="piece-subtitle light" style="margin-top:12px;">把种子种下，悉心照料，一切交给时间</p>
+    </div>
+    <div class="love-list">
+      <div class="love-item"><span class="love-num">01</span><span class="love-text">我爱我相信我的<em>大气晚成</em>，把种子种下，悉心照料，一切交给时间</span></div>
+      <div class="love-item"><span class="love-num">02</span><span class="love-text">我爱我相信<em>我是幸运的</em>，我就是那种被祝福的人</span></div>
+      <div class="love-item"><span class="love-num">03</span><span class="love-text">我爱我坚信<em>父母对我的爱</em>，即便不完美，它依旧是力量的来源</span></div>
+      <div class="love-item"><span class="love-num">04</span><span class="love-text">我爱我坚信<span class="special">上天对我的偏爱</span>，我是被看见、被守护的那一个</span></div>
+      <div class="love-item"><span class="love-num">05</span><span class="love-text">我爱我相信<em>无为而治的可能</em>，有些路只需顺流而行</span></div>
+      <div class="love-item"><span class="love-num">06</span><span class="love-text">我爱我相信我是<span class="special">受宠的小公主</span>，我生来就值得被爱</span></div>
+      <div class="love-item"><span class="love-num">07</span><span class="love-text">我爱我相信我自己，<em>我始终会做出正确的选择</em></span></div>
+      <div class="love-item"><span class="love-num">08</span><span class="love-text">我爱我相信<em>生命力的蓬勃</em>，我的每一天都在生长</span></div>
+      <div class="love-item"><span class="love-num">09</span><span class="love-text">我爱我相信<em>世界是温柔的</em>，它会为我让路</span></div>
+      <div class="love-item"><span class="love-num">10</span><span class="love-text">我爱我相信<span class="special">宇宙会回应我</span>，所有召唤终将抵达</span></div>
+      <div class="love-item"><span class="love-num">11</span><span class="love-text">我爱我相信<em>我走的每一条路都有意义</em></span></div>
+      <div class="love-item"><span class="love-num">12</span><span class="love-text">我爱我相信<em>我不会错过属于我的人和事</em></span></div>
+      <div class="love-item"><span class="love-num">13</span><span class="love-text">我爱我相信<em>命运会在正确的时间展开</em></span></div>
+      <div class="love-item"><span class="love-num">14</span><span class="love-text">我爱我相信<em>我的灵魂有方向</em>，它永远引我回家</span></div>
+      <div class="love-item"><span class="love-num">15</span><span class="love-text"><span class="special">I love that I believe miracles are possible</span> — 奇迹总会发生</span></div>
+      <div class="love-item"><span class="love-num">16</span><span class="love-text">我爱我相信<em>我的人生会越走越开</em></span></div>
+      <div class="love-item"><span class="love-num">17</span><span class="love-text">我爱我相信我会遇到<em>真正理解我灵魂的人</em></span></div>
+      <div class="love-item"><span class="love-num">18</span><span class="love-text">我爱我相信<em>所有的好事都在路上</em></span></div>
+      <div class="love-item"><span class="love-num">19</span><span class="love-text">我爱我相信<em>成长不是压力，而是礼物</em></span></div>
+      <div class="love-item"><span class="love-num">20</span><span class="love-text">我爱我相信我会一直<em>被爱、被保护、被回应</em></span></div>
+      <div class="love-item"><span class="love-num">21</span><span class="love-text">我爱我相信<em>我会得到我想要的一切</em>，不需要争抢</span></div>
+      <div class="love-item"><span class="love-num">22</span><span class="love-text">我爱我相信<em>我值得幸福，也创造幸福</em></span></div>
+      <div class="love-item"><span class="love-num">23</span><span class="love-text">我爱我相信<em>命运一直在照顾我</em></span></div>
+      <div class="love-item"><span class="love-num">24</span><span class="love-text">我爱我相信<span class="special">我的未来比过去更灿烂</span></span></div>
+      <div class="love-item"><span class="love-num">25</span><span class="love-text">我爱我相信我可以<em>松弛、自由、富足</em></span></div>
+      <div class="love-item"><span class="love-num">26</span><span class="love-text">我爱我相信<em>我已经在路上了</em>，不需要急</span></div>
+      <div class="love-item"><span class="love-num">27</span><span class="love-text">我爱我相信<em>所有挑战都是为了成全我</em></span></div>
+      <div class="love-item"><span class="love-num">28</span><span class="love-text">我爱我相信<em>我永远会回到光里</em></span></div>
+      <div class="love-item"><span class="love-num">29</span><span class="love-text">我爱我相信<em>我拥有无限可能</em></span></div>
+      <div class="love-item" style="border-bottom:none;"><span class="love-num">30</span><span class="love-text" style="font-size:clamp(20px,2.5vw,32px);color:var(--cream);">我爱我相信<span class="special">我就是我生命里最大的奇迹</span></span></div>
+    </div>
+    <div class="love-closer reveal">— 真真</div>
+  </div>
+</section>
+
+<!-- 我爱我是谁 -->
+<section id="woaivo3" class="piece" style="background:#100e0b;">
+  <div class="piece-inner">
+    <div class="piece-header bordered-light reveal">
+      <div class="piece-series" style="color:var(--gold-soft);">宣言 · 三</div>
+      <h2 class="piece-title light" style="font-size:clamp(28px,4vw,52px);line-height:1.2;">我爱我，<em>是谁</em></h2>
+      <p class="piece-subtitle light" style="margin-top:12px;">我的自由不需要别人批准</p>
+    </div>
+    <div class="love-list">
+      <div class="love-item"><span class="love-num">01</span><span class="love-text">我爱我对<em>灵性的感知</em>，我能听见世界的暗语与回响</span></div>
+      <div class="love-item"><span class="love-num">02</span><span class="love-text">我爱我对<em>美好的认识与向往</em>，我从不向平庸臣服</span></div>
+      <div class="love-item"><span class="love-num">03</span><span class="love-text">我爱我是个<span class="special">小土匪</span>，我的自由不需要别人批准</span></div>
+      <div class="love-item"><span class="love-num">04</span><span class="love-text">我爱我对<em>音乐的热爱</em>，我能被德彪西感动到流泪</span></div>
+      <div class="love-item"><span class="love-num">05</span><span class="love-text">我爱我能<em>无所事事</em></span></div>
+      <div class="love-item"><span class="love-num">06</span><span class="love-text">我爱我<em>静若处子时的深沉</em>，我能沉入自己</span></div>
+      <div class="love-item"><span class="love-num">07</span><span class="love-text">我爱我<em>动若脱兔时的力量</em>，我能说走就走</span></div>
+      <div class="love-item"><span class="love-num">08</span><span class="love-text">我爱我能启程旅行不需要理由，<em>我生来就是自由的</em></span></div>
+      <div class="love-item"><span class="love-num">09</span><span class="love-text">我爱我<em>想冒险的心</em>，我敢站在骆驼背上看世界</span></div>
+      <div class="love-item"><span class="love-num">10</span><span class="love-text">我爱我<span class="special">骑着马奔腾在沙漠的灵魂</span>，我的风永远向前吹</span></div>
+      <div class="love-item"><span class="love-num">11</span><span class="love-text">我爱我那颗<em>指引我体验世界的心</em>，它永远不会老</span></div>
+      <div class="love-item"><span class="love-num">12</span><span class="love-text">我爱我对<em>未知的渴望</em>，我喜欢一直在成长、在变</span></div>
+      <div class="love-item"><span class="love-num">13</span><span class="love-text">我爱我对<em>美与艺术的捕捉</em>，我的世界从来不灰暗</span></div>
+      <div class="love-item"><span class="love-num">14</span><span class="love-text">我爱我<em>看到风景就想靠近的勇气</em></span></div>
+      <div class="love-item"><span class="love-num">15</span><span class="love-text">我爱我能<em>一眼认出灵魂共振</em>，而不是表面</span></div>
+      <div class="love-item"><span class="love-num">16</span><span class="love-text">我爱我能对某个瞬间<em>突然觉醒的直觉</em></span></div>
+      <div class="love-item"><span class="love-num">17</span><span class="love-text">我爱我能<em>把孤独活成宝藏</em>，而不是惩罚</span></div>
+      <div class="love-item"><span class="love-num">18</span><span class="love-text">我爱我对世界的<em>温柔</em>，我对任何生命都怀着敬意</span></div>
+      <div class="love-item"><span class="love-num">19</span><span class="love-text">我爱我敢<em>用自己的方式活</em>，不复制别人</span></div>
+      <div class="love-item"><span class="love-num">20</span><span class="love-text">我爱我能在<em>混乱中保持审美和秩序</em></span></div>
+      <div class="love-item"><span class="love-num">21</span><span class="love-text">我爱我对美食、音乐、旅行和自然的<em>感情是真诚的</em></span></div>
+      <div class="love-item"><span class="love-num">22</span><span class="love-text">我爱我能<em>为自己点燃火焰</em>，而不是向外索取温暖</span></div>
+      <div class="love-item"><span class="love-num">23</span><span class="love-text">我爱我对<em>善良的坚持</em>，那是我的底线</span></div>
+      <div class="love-item"><span class="love-num">24</span><span class="love-text">我爱我对<em>爱情仍然怀抱希望</em>，即使看过黑暗</span></div>
+      <div class="love-item"><span class="love-num">25</span><span class="love-text">我爱我对世界<em>永不熄灭的好奇</em></span></div>
+      <div class="love-item"><span class="love-num">26</span><span class="love-text">我爱我能在<em>陌生城市重生</em>，也能在老地方安静</span></div>
+      <div class="love-item"><span class="love-num">27</span><span class="love-text">我爱我骨子里的<span class="special">冒险精神</span>，它带我穿越人生</span></div>
+      <div class="love-item"><span class="love-num">28</span><span class="love-text">我爱我天生的<em>敏感</em>，那是我的天赋，而不是弱点</span></div>
+      <div class="love-item"><span class="love-num">29</span><span class="love-text">我爱我能<em>把痛看成礼物</em>，把经历看成资源</span></div>
+      <div class="love-item" style="border-bottom:none;"><span class="love-num">30</span><span class="love-text" style="font-size:clamp(18px,2.2vw,28px);color:var(--cream);">我爱我这一生永远会<span class="special">选择自己、选择自由、选择光</span></span></div>
+    </div>
+    <div class="love-closer reveal">— 真真</div>
+  </div>
+</section>
+
+<!-- 我爱我走过的路 -->
+<section id="woaivo4" class="piece" style="background:#0e0c09;">
+  <div class="piece-inner">
+    <div class="piece-header bordered-light reveal">
+      <div class="piece-series" style="color:var(--gold-soft);">宣言 · 四</div>
+      <h2 class="piece-title light" style="font-size:clamp(28px,4vw,52px);line-height:1.2;">我爱我，<em>走过的路</em></h2>
+      <p class="piece-subtitle light" style="margin-top:12px;">所有的错，全部化成了光</p>
+    </div>
+    <div class="love-list">
+      <div class="love-item"><span class="love-num">01</span><span class="love-text">我爱我<em>曾犯过的错</em>，因为它们让我真实</span></div>
+      <div class="love-item"><span class="love-num">02</span><span class="love-text">我爱我所有<em>不完美的决定</em>，它们帮我认出真正的路</span></div>
+      <div class="love-item"><span class="love-num">03</span><span class="love-text">我爱我<em>曾经看错的人</em>，因为他们教我辨别值得的人</span></div>
+      <div class="love-item"><span class="love-num">04</span><span class="love-text">我爱我<em>曾经的冲动</em>，它让我看到自己灵魂的火</span></div>
+      <div class="love-item"><span class="love-num">05</span><span class="love-text">我爱我<em>错付的温柔</em>，它让我懂得更加珍惜自己</span></div>
+      <div class="love-item"><span class="love-num">06</span><span class="love-text">我爱我<em>曾走过的弯路</em>，因为它们后来都变成捷径</span></div>
+      <div class="love-item"><span class="love-num">07</span><span class="love-text">我爱我<em>曾盲目的时候</em>，因为我因此学会了清醒</span></div>
+      <div class="love-item"><span class="love-num">08</span><span class="love-text">我爱我<em>曾经害怕的自己</em>，因为我现在更勇敢</span></div>
+      <div class="love-item"><span class="love-num">09</span><span class="love-text">我爱我<em>曾经的天真</em>，它证明我从来没有变坏</span></div>
+      <div class="love-item"><span class="love-num">10</span><span class="love-text">我爱我<em>曾经的迟疑</em>，它让我学会了更坚定地选择</span></div>
+      <div class="love-item"><span class="love-num">11</span><span class="love-text">我爱我<em>曾经的过度付出</em>，因为它提醒我该爱自己</span></div>
+      <div class="love-item"><span class="love-num">12</span><span class="love-text">我爱我<em>曾经放弃自己的瞬间</em>，它让我知道什么不能再放弃</span></div>
+      <div class="love-item"><span class="love-num">13</span><span class="love-text">我爱我<em>曾经被利用的地方</em>，它让我学会保护界限</span></div>
+      <div class="love-item"><span class="love-num">14</span><span class="love-text">我爱我<em>曾经的失误</em>，它们都是我智慧的开端</span></div>
+      <div class="love-item"><span class="love-num">15</span><span class="love-text">我爱我<em>曾经的盲点</em>，因为它们让我看到新的世界</span></div>
+      <div class="love-item"><span class="love-num">16</span><span class="love-text">我爱我犯过的错，它们让我<em>更懂得尊重自己的直觉</em></span></div>
+      <div class="love-item"><span class="love-num">17</span><span class="love-text">我爱我<em>曾经的误解</em>，因为它们教我怎样真正沟通</span></div>
+      <div class="love-item"><span class="love-num">18</span><span class="love-text">我爱我<em>曾经浪费的时间</em>，因为它让我更珍惜现在</span></div>
+      <div class="love-item"><span class="love-num">19</span><span class="love-text">我爱我<em>曾经忽略自己的地方</em>，它让我学会聆听自己</span></div>
+      <div class="love-item"><span class="love-num">20</span><span class="love-text">我爱我<em>曾经逃避的时刻</em>，它让我更懂面对有多重要</span></div>
+      <div class="love-item"><span class="love-num">21</span><span class="love-text">我爱我所有<em>掉过的眼泪</em>，因为它们洗掉旧的自己</span></div>
+      <div class="love-item"><span class="love-num">22</span><span class="love-text">我爱我<em>曾经压抑的情绪</em>，因为我终于让它们自由</span></div>
+      <div class="love-item"><span class="love-num">23</span><span class="love-text">我爱我<em>曾经的破碎</em>，它让我有能力承载更多光</span></div>
+      <div class="love-item"><span class="love-num">24</span><span class="love-text">我爱我<em>曾经的失败</em>，因为它们让我学会方向感</span></div>
+      <div class="love-item"><span class="love-num">25</span><span class="love-text">我爱我<em>曾经被击倒的地方</em>，因为它们让我站得更稳</span></div>
+      <div class="love-item"><span class="love-num">26</span><span class="love-text">我爱我<em>曾自我怀疑的夜晚</em>，因为它们照亮了我的真</span></div>
+      <div class="love-item"><span class="love-num">27</span><span class="love-text">我爱我<em>曾经的固执</em>，因为它让我的灵魂有骨气</span></div>
+      <div class="love-item"><span class="love-num">28</span><span class="love-text">我爱我所有的<em>不小心</em>，因为它们都是我成长的伏笔</span></div>
+      <div class="love-item"><span class="love-num">29</span><span class="love-text">我爱我<em>曾经的错觉</em>，它让我分清幻想与现实</span></div>
+      <div class="love-item" style="border-bottom:none;"><span class="love-num">30</span><span class="love-text" style="font-size:clamp(18px,2.2vw,28px);color:var(--cream);line-height:1.7;">我爱我所有的错，因为它们<span class="special">全部化成了光</span>，回到我身上，变成了力量</span></div>
+    </div>
+    <div class="love-closer reveal">— 真真</div>
+  </div>
+</section>
+
+<!-- 我爱每一岁的自己 -->
+<section id="ages" class="piece" style="background: var(--paper);">
+  <div class="piece-inner">
+    <div class="piece-header bordered reveal">
+      <div class="piece-series" style="color:var(--terra);">成长史 · 第八章</div>
+      <h2 class="piece-title dark" style="font-size:clamp(32px,4.5vw,60px);line-height:1.1;">我爱每一岁<br>的<em style="color:var(--terra);">自己</em></h2>
+      <p class="piece-subtitle dark" style="margin-top:14px;">从未出生，到此刻——每一个年龄的你，都完整</p>
+    </div>
+
+    <div class="love-list" style="--love-border: rgba(168,72,50,0.1);">
+
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">0</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>未出生的自己</em> — 小灵魂找了一个很好的妈妈，七个月就来到了这个世界，爱她顽强的生命力</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">1</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>1岁的自己</em> — you made it，出生后插满针管在保温箱待了两个礼拜，才3斤八两的小家伙，1岁时已经快是30斤的小气球了</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">2</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>2岁的自己</em> — 跑来跑去的探索小世界</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">3</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>3岁的自己</em> — 爱她甜甜的小嘴，总要人抱不走路的赖皮样子，和让爷爷买冰棍儿的小心思</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">4</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>4岁的自己</em> — 爱她吹大大泡泡糖可爱的样子，爱她一定要妈妈说很多遍爱她才肯睡觉的让人心疼的样子</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">5</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>5岁的自己</em> — 爱她是个小土匪，策划从幼儿园越狱去见妈妈的<em>勇敢与谋略</em></span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">6</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>6岁的自己</em> — 风一般的女子，和一帮野小子穿梭在北京胡同里；爱她旁若无人在挤满了人的公共汽车上做作业；心疼她不认识1角钱，偷偷把钱放在路边又提心吊胆逃票的样子</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">7</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>7岁的自己</em> — 安静地描画窗前的丝瓜藤蔓，一张又一张，是否是在那时候，<em>藤蔓的美在她脑海中妙曼生长</em></span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">8</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>8岁的自己</em> — 做手工进入心流的小女孩，那专注的神情和灵巧的双手</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">9</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>9岁的自己</em> — 特别特别想看射雕英雄传，偷偷跑回家吃糖饼干；作文总是被全班朗读，有点害羞又得意；在黄河边玩泥巴，在黄土地上挖野菜，拿各种花朵染指甲</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">10</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>10岁的自己</em> — 终于回到了妈妈身边，一颗小辣椒，终于有了靠山；伶牙俐齿，有点不好意思数学考了全班第一的样子</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">11</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>11岁的自己</em> — 补习班削铅笔怎么都不懂画阴影；礼拜二广播站 talk show，根本不打草稿，上来就 blah blah 的飒爽</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">12</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>12岁的自己</em> — 第一次对个男孩子有了不一样的感觉，懵懵懂懂的自己</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">13</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>13岁的自己</em> — 在合唱队站c位滥竽充数的得意样子，躲在被子里手电筒看古龙的激动</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">14</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>14岁的自己</em> — 穿着小礼服主持全校晚会，灯光下闪耀的样子；作文上了青少年报，全校朗读时紧张的样子</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">15</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>15岁的自己</em> — 勤奋备考，中考拿了全校第一的骄傲</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">16</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>16岁的自己</em> — 沉浸在摇滚音乐里，酷酷的样子</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">17</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>17岁的自己</em> — 背着爸妈从北京跑去新疆，带着一只天桥下买的小白猫，徒步跋涉12个小时，就为了想看一眼白色的顶峰；回家还带了两只德国黑背</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">18</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>18岁的自己</em> — 独自来到陌生的国度，坚强独立的自己</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">19</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>19岁的自己</em> — 努力在专业里学习的样子，<em>随身带着电线剪的女孩好酷</em></span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">20</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>20岁的自己</em> — 在冰天雪地里有温暖，和朋友们嬉笑玩耍的青春年华</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">21</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>21岁的自己</em> — 独自背包欧洲的无所畏惧</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">22</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>22岁的自己</em> — 开着自己赚钱买的小宝马，东窜西跑，帅的一批</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">23</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>23岁的自己</em> — 她第一次在迷茫中找寻意义</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">24</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>24岁的自己</em> — 让创作冲动在旅行中开花；在日本的银杏树下感动落泪；在iowa玉米地里认识了好多有趣的爷爷奶奶；在加州的阳光下扛着摄影机学怎么讲故事</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">25</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>25岁的自己</em> — 贿赂招聘会的宝安插队，然后用英语跟招聘的人吵了一架，然后就获得了一份工作</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">26</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>26岁的自己</em> — 坚强地与生活对抗，不服输，死磕的样子</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">27</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>27岁的自己</em> — 又一次想干就干，6天准备MBA申请，自信满满面试拿下MIT的offer；在景德镇沉浸于泥土与火焰的魅力</span>
+      </div>
+      <div class="love-item" style="border-bottom:1px solid rgba(168,72,50,0.1);">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">28</span>
+        <span class="love-text" style="color:#3d342c;">我爱<em>28岁的自己</em> — 穿着民族服装大裙摆，天天在金融课上背宋词的坏学生</span>
+      </div>
+      <div class="love-item" style="border-bottom:none;">
+        <span class="love-num" style="color:rgba(168,72,50,0.4);">29</span>
+        <span class="love-text" style="color:#3d342c;font-size:clamp(17px,2vw,22px);">我爱<em>29岁的自己</em> — 每天做模型到深夜，在心流状态的自己，每科小细胞都兴奋地在跳舞</span>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding-top:72px; padding-bottom:16px;">
+      <p class="reveal" style="font-family:'Cormorant Garamond',serif; font-size:clamp(20px,2.5vw,30px); font-style:italic; font-weight:300; color:var(--terra); line-height:1.7; max-width:520px; margin:0 auto;">
+        每一个年龄的你，<br>都完整，都值得被爱，<br>都是今天这个你的来处。
+      </p>
+      <p class="reveal" style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; color:var(--warm-mid); margin-top:24px;">— 真真</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER NAV -->
+<div class="piece-footer-nav">
+  <a href="index.html" class="pfn-back">返回主页</a>
+  <span class="pfn-sig">真真 · Lucy Wang · 向阳而生</span>
+</div>
+
+<footer>
+  <div class="footer-name">真真 · Lucy Wang</div>
+  <div class="footer-copy">© 2026 · 文字 · Writing</div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    ring.style.left = mx + 'px';
+    ring.style.top = my + 'px';
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => revealObs.observe(el));
+
+  // Love items stagger
+  const loveItems = document.querySelectorAll('.love-item');
+  const loveObs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 40);
+        loveObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05 });
+  loveItems.forEach(el => loveObs.observe(el));
+</script>
+</body>
+</html>

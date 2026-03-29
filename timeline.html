@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成长线 · 真真 Lucy Wang</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Noto+Serif+SC:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #100e0b;
+    --cream: #f7f2ea;
+    --gold: #c4873a;
+    --gold-soft: #e2b97a;
+    --terra: #a84832;
+    --warm-mid: #7a6e62;
+    --sand: #d4c4a8;
+    --paper: #faf6ef;
+    --paper2: #f2ece0;
+    --moss: #4e6349;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 7px; height: 7px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(196,135,58,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: left 0.12s ease, top 0.12s ease;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 26px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(250,246,239,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(196,135,58,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a::before { font-size: 14px; }
+  .nav-back::before { content: '←  '; }
+
+  /* HERO */
+  #hero {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 140px 64px 80px;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,135,58,0.06) 0%, transparent 70%);
+    top: 50%; left: 40%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 9vw, 120px);
+    font-weight: 300;
+    line-height: 0.92;
+    color: var(--cream);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); display: block; font-size: 0.5em; margin-top: 10px; letter-spacing: 0.06em; }
+  .hero-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(15px, 1.8vw, 20px);
+    font-style: italic;
+    color: var(--warm-mid);
+    max-width: 480px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TIMELINE */
+  #timeline {
+    padding: 100px 64px;
+    position: relative;
+  }
+
+  /* Center vertical line */
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(196,135,58,0.2) 5%, rgba(196,135,58,0.2) 95%, transparent);
+    transform: translateX(-50%);
+  }
+
+  /* Era labels */
+  .era-label {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    margin: 80px 0 60px;
+  }
+  .era-label:first-child { margin-top: 0; }
+  .era-inner {
+    display: inline-block;
+    background: var(--paper);
+    padding: 12px 28px;
+    border: 1px solid rgba(196,135,58,0.2);
+  }
+  .era-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* Timeline item */
+  .tl-item {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    gap: 0;
+    margin-bottom: 72px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .tl-item.visible { opacity: 1; transform: translateY(0); }
+
+  /* Alternating sides */
+  .tl-item.left .tl-content { grid-column: 1; text-align: right; padding-right: 48px; }
+  .tl-item.left .tl-photo { grid-column: 1; text-align: right; padding-right: 48px; }
+  .tl-item.left .tl-dot { grid-column: 2; }
+  .tl-item.left .tl-empty { grid-column: 3; }
+
+  .tl-item.right .tl-empty { grid-column: 1; }
+  .tl-item.right .tl-dot { grid-column: 2; }
+  .tl-item.right .tl-content { grid-column: 3; text-align: left; padding-left: 48px; }
+  .tl-item.right .tl-photo { grid-column: 3; text-align: left; padding-left: 48px; }
+
+  /* Dot */
+  .tl-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+  }
+  .dot-age {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .dot-circle {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .dot-circle::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(196,135,58,0.3);
+  }
+
+  /* Content */
+  .tl-content {
+    padding-top: 2px;
+  }
+  .tl-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 1.8vw, 20px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .tl-headline em { font-style: italic; color: var(--terra); }
+  .tl-body {
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--warm-mid);
+  }
+  .tl-body strong { color: var(--ink); font-weight: 400; }
+
+  /* Photo slot */
+  .tl-photo {
+    margin-top: 16px;
+  }
+  .photo-frame {
+    display: inline-block;
+    position: relative;
+    max-width: 280px;
+    width: 100%;
+  }
+  .photo-frame img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: sepia(15%) contrast(0.95) brightness(1.02);
+  }
+  .photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(196,135,58,0.2);
+    pointer-events: none;
+  }
+  .photo-caption {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--warm-mid);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* Photo placeholder */
+  .photo-placeholder {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    height: 260px;
+    border: 1px dashed rgba(196,135,58,0.25);
+    background: rgba(196,135,58,0.02);
+    gap: 10px;
+  }
+  .photo-placeholder-icon {
+    font-size: 28px;
+    opacity: 0.3;
+  }
+  .photo-placeholder-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(196,135,58,0.35);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* Special items - no photo */
+  .tl-item.no-photo .tl-content { padding-top: 6px; }
+
+  /* Closing */
+  .timeline-end {
+    text-align: center;
+    padding: 60px 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .te-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin: 0 auto 20px;
+    position: relative;
+  }
+  .te-dot::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(196,135,58,0.3);
+  }
+  .te-dot::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 1px solid rgba(196,135,58,0.15);
+  }
+  .te-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--warm-mid);
+  }
+  .te-text em { color: var(--gold); font-style: normal; }
+
+  /* Footer */
+  .page-footer-nav {
+    background: var(--paper2);
+    padding: 48px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(196,135,58,0.1);
+  }
+  .pfn-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    text-decoration: none;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pfn-link:hover { color: var(--gold); }
+  .pfn-sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--warm-mid);
+  }
+
+  footer {
+    background: var(--ink);
+    padding: 36px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(196,135,58,0.08);
+  }
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #3a3028;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    #hero { padding: 110px 28px 60px; }
+    #timeline { padding: 60px 20px; }
+    .timeline-line { left: 20px; }
+
+    .tl-item {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      margin-bottom: 52px;
+    }
+    .tl-item.left .tl-empty,
+    .tl-item.right .tl-empty { display: none; }
+
+    .tl-item.left .tl-dot,
+    .tl-item.right .tl-dot {
+      order: 1;
+      flex-shrink: 0;
+      width: 44px;
+      grid-column: unset;
+    }
+    .tl-item.left .tl-content,
+    .tl-item.right .tl-content {
+      order: 2;
+      text-align: left !important;
+      padding-left: 16px !important;
+      padding-right: 0 !important;
+      flex: 1;
+      min-width: 0;
+      grid-column: unset;
+    }
+    .tl-item.left .tl-photo,
+    .tl-item.right .tl-photo {
+      order: 3;
+      text-align: left !important;
+      padding-left: 16px !important;
+      padding-right: 0 !important;
+      grid-column: unset;
+    }
+    .tl-item > div:not(.tl-dot):not(.tl-empty) {
+      flex: 1;
+      min-width: 0;
+    }
+    .tl-headline { font-size: 16px; word-break: keep-all; }
+    .tl-body { font-size: 13px; word-break: keep-all; }
+    .era-label { text-align: left; padding-left: 60px; }
+    .photo-frame { max-width: 100%; }
+    .photo-frame img { height: 200px; }
+    .photo-placeholder { width: 160px; height: 180px; }
+    .page-footer-nav { padding: 36px 24px; flex-direction: column; gap: 16px; }
+    footer { padding: 28px 24px; flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">真真</a>
+  <div class="nav-links">
+    <a href="writing.html" class="nav-back">文字</a>
+    <a href="index.html" class="nav-back">主页</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">小土匪成长线 · Timeline</div>
+  <h1 class="hero-title">
+    小土匪
+    <em>成长线</em>
+  </h1>
+  <p class="hero-desc">
+    从未出生的小灵魂，到今天的真真——<br>
+    每一年，都是一朵浪，推着你向前。
+  </p>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="timeline-line"></div>
+
+  <!-- ERA: 童年 -->
+  <div class="era-label">
+    <div class="era-inner"><span class="era-text">童年 · 0—9岁</span></div>
+  </div>
+
+  <!-- 0 未出生 -->
+  <div class="tl-item left">
+    <div class="tl-content">
+      <div class="tl-headline">未出生的<em>小灵魂</em></div>
+      <div class="tl-body">七个月就来到了这个世界，找了一个很好的妈妈。顽强的生命力，从一开始就是她的底色。</div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">0</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 1岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">1</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">你<em>做到了</em> — You made it.</div>
+        <div class="tl-body">保温箱待了两个礼拜，插满针管的小家伙才3斤八两。1岁时已经是30斤的小气球了。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">甜甜的小嘴，<em>赖皮的样子</em></div>
+        <div class="tl-body">总要人抱不走路，让爷爷买冰棍儿的小心思，一定要妈妈说很多遍爱她才肯睡觉。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">3—4</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 5岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">5</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">幼儿园<em>越狱计划</em></div>
+        <div class="tl-body">小土匪策划从幼儿园越狱去见妈妈——有勇气，有谋略，从五岁就开始了。</div>
+      </div>
+      <div class="tl-photo">
+        <div class="photo-placeholder">
+          <div class="photo-placeholder-icon">🌟</div>
+          <div class="photo-placeholder-text">5岁<br>照片待添加</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">北京胡同里的<em>风</em></div>
+        <div class="tl-body">和一帮野小子穿梭在胡同里，旁若无人在公共汽车上做作业。心疼她不认识1角钱，偷偷把钱放路边又提心吊胆逃票的样子。</div>
+      </div>
+      <div class="tl-photo">
+        <div class="photo-placeholder">
+          <div class="photo-placeholder-icon">🏮</div>
+          <div class="photo-placeholder-text">6岁<br>照片待添加</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">6</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 7岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">7</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">窗前的<em>丝瓜藤蔓</em></div>
+        <div class="tl-body">安静地描画，一张又一张。是否是在那时候，藤蔓的美在她脑海中妙曼生长。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">黄河边的<em>小野孩</em></div>
+        <div class="tl-body">玩泥巴、挖野菜、拿花朵染指甲；作文被全班朗读，有点害羞又得意；偷偷跑回家吃糖饼干，特别特别想看射雕英雄传。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">9</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- ERA: 少年 -->
+  <div class="era-label">
+    <div class="era-inner"><span class="era-text">少年 · 10—17岁</span></div>
+  </div>
+
+  <!-- 10岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">10</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">终于回到<em>妈妈身边</em></div>
+        <div class="tl-body">一颗小辣椒，终于有了靠山。伶牙俐齿，有点不好意思数学考了全班第一的样子。</div>
+      </div>
+      <div class="tl-photo">
+        <div class="photo-frame">
+          <img src="photos/age10.jpg" alt="10岁的真真"
+            onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><div class=\'photo-placeholder-icon\'>📷</div><div class=\'photo-placeholder-text\'>10岁<br>照片待添加</div></div>'">
+        </div>
+        <div class="photo-caption">天安门广场 · 约10岁</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">广播站的<em>飒爽</em></div>
+        <div class="tl-body">补习班削铅笔怎么都不懂画阴影。礼拜二广播站 talk show，根本不打草稿，上来就 blah blah 的飒爽。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">11</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 13岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">13</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">合唱队<em>c位</em>滥竽充数</div>
+        <div class="tl-body">得意的样子。躲在被子里手电筒看古龙，激动得睡不着。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">灯光下的<em>闪耀</em></div>
+        <div class="tl-body">穿着小礼服主持全校晚会。作文上了青少年报，全校朗读时紧张的样子。</div>
+      </div>
+      <div class="tl-photo">
+        <div class="photo-frame">
+          <img src="photos/age14.jpg" alt="14岁的真真"
+            onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><div class=\'photo-placeholder-icon\'>✨</div><div class=\'photo-placeholder-text\'>14岁<br>照片待添加</div></div>'">
+        </div>
+        <div class="photo-caption">大约14岁 · 蓝色贝雷帽</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">14</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 15岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">15</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">中考<em>全校第一</em></div>
+        <div class="tl-body">勤奋备考的那个夏天。骄傲，但不张扬。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 17岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">带着小白猫<em>出走新疆</em></div>
+        <div class="tl-body">背着爸妈，从北京跑去新疆。天桥下买的小白猫，徒步12小时，只为看一眼白色的顶峰。回家还带了两只德国黑背。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">17</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- ERA: 青年 -->
+  <div class="era-label">
+    <div class="era-inner"><span class="era-text">青年 · 18—29岁</span></div>
+  </div>
+
+  <!-- 18岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">18</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">独自来到<em>陌生的国度</em></div>
+        <div class="tl-body">坚强，独立。一个人面对一个全新的世界，没有退路，也不需要。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 21岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">独自背包<em>欧洲</em></div>
+        <div class="tl-body">无所畏惧的21岁。世界那么大，她一个人去看了。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">21</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 22岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">22</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">自己赚钱买的<em>小宝马</em></div>
+        <div class="tl-body">东窜西跑，帅的一批。二十二岁，已经活得这么自由了。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 24岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">银杏树下<em>感动落泪</em></div>
+        <div class="tl-body">日本银杏树下；Iowa玉米地认识有趣的爷爷奶奶；加州阳光下扛着摄影机学讲故事。创作冲动在旅行中开花。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">24</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 25岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">25</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">吵架<em>赢得一份工作</em></div>
+        <div class="tl-body">贿赂招聘会保安插队，然后用英语跟招聘的人吵了一架——然后就获得了一份工作。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 27岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">6天，拿下<em>MIT的offer</em></div>
+        <div class="tl-body">想干就干。6天准备MBA申请，自信满满拿下MIT。同年在景德镇沉浸于泥土与火焰的魅力。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">27</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- 28岁 -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">28</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">MIT金融课上<em>背宋词</em></div>
+        <div class="tl-body">穿着民族服装大裙摆，天天在金融课上背宋词的坏学生。MIT Sloan，但灵魂还是那个自己。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 29岁 -->
+  <div class="tl-item left">
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline">每天做模型到深夜，<em>每个细胞在跳舞</em></div>
+        <div class="tl-body">在心流状态的自己——那种全身投入、忘记时间的感觉，是她最快乐的样子之一。</div>
+      </div>
+    </div>
+    <div class="tl-dot">
+      <div class="dot-age">29</div>
+      <div class="dot-circle"></div>
+    </div>
+    <div class="tl-empty"></div>
+  </div>
+
+  <!-- ERA: 此刻 -->
+  <div class="era-label">
+    <div class="era-inner"><span class="era-text">此刻 · Now</span></div>
+  </div>
+
+  <!-- Now -->
+  <div class="tl-item right">
+    <div class="tl-empty"></div>
+    <div class="tl-dot">
+      <div class="dot-age">今</div>
+      <div class="dot-circle" style="background:var(--terra); width:14px; height:14px;"></div>
+    </div>
+    <div>
+      <div class="tl-content">
+        <div class="tl-headline" style="color:var(--terra);">真真，<em>此刻</em></div>
+        <div class="tl-body">领导者、创作者、故事人。弹德彪西、养植物、写文字、向阳而生。<strong>故事还在继续。</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End dot -->
+  <div class="timeline-end">
+    <div class="te-dot"></div>
+    <p class="te-text">每一年，都是来处。<br>此刻的你，<em>由所有的你</em>构成。</p>
+  </div>
+
+</section>
+
+<div class="page-footer-nav">
+  <a href="writing.html" class="pfn-link">← 返回文字</a>
+  <span class="pfn-sig">真真 · Lucy Wang · 成长线</span>
+  <a href="index.html" class="pfn-link">返回主页 →</a>
+</div>
+
+<footer>
+  <div class="footer-name">真真 · Lucy Wang</div>
+  <div class="footer-copy">© 2026 · 成长线 · Timeline</div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    ring.style.left = mx + 'px';
+    ring.style.top = my + 'px';
+  });
+
+  const items = document.querySelectorAll('.tl-item');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  items.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

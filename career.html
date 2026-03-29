@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>真真女将 · 真真</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Noto+Serif+SC:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #100e0b;
+    --cream: #f7f2ea;
+    --gold: #c4873a;
+    --gold-soft: #e2b97a;
+    --terra: #a84832;
+    --warm-mid: #7a6e62;
+    --sand: #d4c4a8;
+    --paper: #faf6ef;
+    --paper2: #f2ece0;
+    --paper3: #ede5d4;
+    --moss: #4e6349;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 7px; height: 7px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(196,135,58,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: left 0.12s ease, top 0.12s ease;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 26px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(16,14,11,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(196,135,58,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+  }
+  .nav-back:hover { color: var(--gold); }
+  .nav-back::before { content: '←'; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 140px 64px 100px;
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 80% 40%, rgba(196,135,58,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(168,72,50,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(196,135,58,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(196,135,58,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(64px, 11vw, 160px);
+    font-weight: 300;
+    line-height: 0.88;
+    color: var(--cream);
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 40px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+  .hero-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2vw, 26px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--warm-mid);
+    max-width: 560px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tagline strong { color: var(--cream); font-style: normal; font-weight: 300; }
+
+  .hero-stats {
+    display: flex;
+    gap: 60px;
+    margin-top: 56px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(196,135,58,0.15);
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .hs-item {}
+  .hs-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+  }
+  .hs-num sup { font-size: 20px; color: var(--gold); }
+  .hs-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    margin-top: 8px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  .section { padding: 120px 64px; }
+  .section-light { background: var(--paper); color: var(--ink); }
+  .section-warm { background: var(--paper2); color: var(--ink); }
+  .section-dark { background: var(--ink); }
+  .section-deep { background: #0c0a08; }
+  .section-mid { background: #1a1208; }
+
+  .sec-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+  .sec-tag::before { content: ''; width: 28px; height: 1px; flex-shrink: 0; }
+  .sec-tag.gold { color: var(--gold); }
+  .sec-tag.gold::before { background: var(--gold); }
+  .sec-tag.terra { color: var(--terra); }
+  .sec-tag.terra::before { background: var(--terra); }
+  .sec-tag.moss { color: var(--moss); }
+  .sec-tag.moss::before { background: var(--moss); }
+
+  .sec-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .sec-headline.light { color: var(--cream); font-size: clamp(36px, 5vw, 68px); }
+  .sec-headline.dark { color: var(--ink); font-size: clamp(36px, 5vw, 68px); }
+  .sec-headline em { font-style: italic; }
+  .sec-headline.light em { color: var(--gold); }
+  .sec-headline.dark em { color: var(--terra); }
+
+  /* STORY GRID */
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 100px;
+    align-items: start;
+  }
+  .story-left { position: sticky; top: 120px; }
+  .story-right {}
+
+  .prose {
+    font-size: 16px;
+    line-height: 2.1;
+  }
+  .prose.light { color: rgba(247,242,234,0.72); }
+  .prose.dark { color: #3d342c; }
+  .prose p + p { margin-top: 24px; }
+  .prose strong { font-weight: 600; }
+  .prose.light strong { color: var(--cream); }
+  .prose.dark strong { color: var(--ink); }
+  .prose em { font-style: italic; }
+  .prose.light em { color: var(--gold-soft); }
+  .prose.dark em { color: var(--terra); }
+
+  .pull {
+    margin: 48px 0;
+    padding: 32px 44px;
+    border-left: 2px solid var(--gold);
+  }
+  .pull.on-dark { background: rgba(196,135,58,0.05); }
+  .pull.on-light { background: rgba(196,135,58,0.04); }
+  .pull p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 2.2vw, 28px);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .pull.on-dark p { color: var(--cream); }
+  .pull.on-light p { color: var(--ink); }
+  .pull p strong { font-style: normal; }
+  .pull.on-dark p strong { color: var(--gold); }
+  .pull.on-light p strong { color: var(--terra); }
+
+  /* MILESTONES */
+  .milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: rgba(196,135,58,0.1);
+  }
+  .milestone {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    background: var(--ink);
+    transition: background 0.3s;
+    cursor: default;
+  }
+  .milestone:hover { background: rgba(196,135,58,0.05); }
+  .ms-year {
+    padding: 32px 24px;
+    border-right: 1px solid rgba(196,135,58,0.1);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .ms-year span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+  }
+  .ms-content {
+    padding: 32px 40px;
+  }
+  .ms-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .ms-company {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .ms-desc {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--warm-mid);
+  }
+  .ms-desc strong { color: var(--cream); font-weight: 400; }
+
+  /* BRAVE MOMENTS */
+  .brave-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: rgba(196,135,58,0.08);
+  }
+  .brave-card {
+    background: var(--paper2);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .brave-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--terra);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.4s ease;
+  }
+  .brave-card:hover { background: var(--paper); }
+  .brave-card:hover::before { transform: scaleY(1); }
+  .bc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--terra);
+    margin-bottom: 20px;
+  }
+  .bc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .bc-body {
+    font-size: 14px;
+    line-height: 1.85;
+    color: #5a4f45;
+  }
+
+  /* TEAM PHILOSOPHY */
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(196,135,58,0.1);
+    margin-top: 60px;
+  }
+  .phil-card {
+    background: #0c0a08;
+    padding: 44px 36px;
+    border: 1px solid rgba(196,135,58,0.06);
+    transition: border-color 0.3s;
+  }
+  .phil-card:hover { border-color: rgba(196,135,58,0.2); }
+  .phil-icon { font-size: 28px; margin-bottom: 20px; display: block; }
+  .phil-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .phil-body {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--warm-mid);
+  }
+
+  /* MIT SECTION */
+  .mit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .mit-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 3vw, 38px);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--cream);
+    position: relative;
+    padding-left: 32px;
+  }
+  .mit-quote::before {
+    content: '"';
+    position: absolute;
+    left: 0; top: -10px;
+    font-size: 80px;
+    color: var(--gold);
+    opacity: 0.2;
+    line-height: 1;
+  }
+  .mit-quote strong { color: var(--gold); font-style: normal; }
+
+  /* CLOSING */
+  #closing {
+    background: var(--ink);
+    padding: 140px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .closing-rings .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(196,135,58,0.06);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .closing-inner { position: relative; z-index: 2; }
+  .closing-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 0.95;
+    color: var(--cream);
+    margin-bottom: 32px;
+  }
+  .closing-headline em { font-style: italic; color: var(--gold); display: block; }
+  .closing-body {
+    font-size: 17px;
+    line-height: 1.9;
+    color: var(--warm-mid);
+    max-width: 500px;
+    margin: 0 auto 48px;
+  }
+  .closing-body strong { color: var(--cream); font-weight: 400; }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); }
+
+  /* FOOTER */
+  .page-footer-nav {
+    background: var(--paper3);
+    padding: 48px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(196,135,58,0.1);
+  }
+  .pfn-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    text-decoration: none;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pfn-link:hover { color: var(--gold); }
+  .pfn-sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--warm-mid);
+  }
+
+  footer {
+    background: #080604;
+    padding: 36px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(196,135,58,0.08);
+  }
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #3a3028;
+  }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    #hero { padding: 120px 28px 72px; }
+    .section { padding: 80px 28px; }
+    .story-grid { grid-template-columns: 1fr; gap: 48px; }
+    .story-left { position: static; }
+    .brave-grid { grid-template-columns: 1fr; }
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .mit-grid { grid-template-columns: 1fr; gap: 48px; }
+    .hero-stats { gap: 32px; }
+    .milestone { grid-template-columns: 56px 1fr; }
+    .ms-content { padding: 24px 20px; }
+    .page-footer-nav { padding: 36px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    footer { padding: 28px 24px; flex-direction: column; gap: 12px; }
+    #closing { padding: 100px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">真真</a>
+  <a href="index.html" class="nav-back">返回主页</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-eyebrow">真真女将 · Career & Leadership</div>
+  <h1 class="hero-title">
+    真真
+    <em>女将</em>
+  </h1>
+  <p class="hero-tagline">
+    不是因为不害怕，<br>
+    而是<strong>害怕了还是上了</strong>。<br>
+    这，就是真真的领导力。
+  </p>
+  <div class="hero-stats">
+    <div class="hs-item">
+      <div class="hs-num">15<sup>+</sup></div>
+      <div class="hs-label">年职场经验</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">MIT</div>
+      <div class="hs-label">Sloan MBA</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">Toast</div>
+      <div class="hs-label">Senior Manager</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">∞</div>
+      <div class="hs-label">还没写完的故事</div>
+    </div>
+  </div>
+</section>
+
+<!-- FROM ZERO -->
+<section class="section section-light" id="from-zero">
+  <div class="story-grid">
+    <div class="story-left">
+      <div class="sec-tag terra reveal">从零开始</div>
+      <h2 class="sec-headline dark reveal">
+        没有人<br>给我<em>剧本</em>
+      </h2>
+    </div>
+    <div class="story-right">
+      <div class="prose dark reveal">
+        <p>我不是那种从小就知道自己要做什么的人。18岁独自来到陌生的国度，没有路线图，没有人告诉我下一步是什么。</p>
+        <p>我只知道一件事：<strong>我不服输。</strong></p>
+        <p>25岁，贿赂招聘会保安插队，然后用英语跟招聘官吵了一架——然后就获得了第一份正式工作。没有关系，没有背景，就是一股劲儿。</p>
+        <p>26岁，坚强地与生活对抗，不知道前路在哪里，但死磕。27岁，想干就干，6天准备MIT MBA申请，自信满满拿下offer。</p>
+        <p>不是因为我比别人聪明，是因为我比别人<strong>更敢相信自己</strong>。</p>
+      </div>
+      <div class="pull on-light reveal">
+        <p>我从来不等准备好了再出发。<br><strong>出发，就是准备好了。</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MIT -->
+<section class="section section-deep" id="mit">
+  <div class="mit-grid">
+    <div>
+      <div class="sec-tag gold reveal">MIT Sloan · 2013</div>
+      <h2 class="sec-headline light reveal">
+        穿着大裙摆<br>上<em>金融课</em>
+      </h2>
+      <div class="prose light reveal" style="margin-top:32px;">
+        <p>MIT Sloan，全球顶尖商学院。我穿着民族服装大裙摆，天天在金融课上背宋词。</p>
+        <p>但认真的时候，每天做模型到深夜，<strong>在心流状态里，每个细胞都在跳舞</strong>。</p>
+        <p>MIT教会我的，不只是财务模型和战略框架——是一种思维方式：<em>把最复杂的问题，拆解成最清晰的决策。</em></p>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="mit-quote">
+        上了MIT我才明白，<br>
+        聪明人之间的差距，<br>
+        从来不在脑子，<br>
+        在<strong>敢不敢真正下注</strong>。
+      </div>
+      <div style="margin-top:40px; display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; align-items:center; gap:16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; color:var(--warm-mid);">
+          <span style="color:var(--gold);">◆</span> MIT Sloan School of Management
+        </div>
+        <div style="display:flex; align-items:center; gap:16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; color:var(--warm-mid);">
+          <span style="color:var(--gold);">◆</span> MBA · Class of 2015
+        </div>
+        <div style="display:flex; align-items:center; gap:16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; color:var(--warm-mid);">
+          <span style="color:var(--gold);">◆</span> 6天准备申请 · 自信拿下
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAREER MILESTONES -->
+<section class="section section-dark" id="milestones">
+  <div class="sec-tag gold reveal">职业轨迹</div>
+  <h2 class="sec-headline light reveal" style="margin-bottom:60px;">
+    每一步，都是<em>蓄力</em>
+  </h2>
+  <div class="milestones reveal">
+    <div class="milestone">
+      <div class="ms-year"><span>早期</span></div>
+      <div class="ms-content">
+        <div class="ms-role">第一份工作</div>
+        <div class="ms-company">靠一架吵赢的英语获得</div>
+        <div class="ms-desc">没有关系，没有背景。用英语和招聘官吵了一架，然后拿到了工作。<strong>这就是她做事的方式。</strong></div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ms-year"><span>2013—15</span></div>
+      <div class="ms-content">
+        <div class="ms-role">MIT Sloan MBA</div>
+        <div class="ms-company">Massachusetts Institute of Technology</div>
+        <div class="ms-desc">全球顶尖商学院。白天做模型，晚上背宋词。用两年时间，把商业语言和直觉感知熔在一起。</div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ms-year"><span>近年</span></div>
+      <div class="ms-content">
+        <div class="ms-role">Senior Manager</div>
+        <div class="ms-company">Toast · 餐饮科技领域领导者</div>
+        <div class="ms-desc">带领跨职能团队，推动大规模战略项目落地。在高速成长的科技公司里，<strong>把战略变成行动，把团队变成力量。</strong></div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ms-year"><span>进行中</span></div>
+      <div class="ms-content">
+        <div class="ms-role">战略项目 · Haas & Meraki</div>
+        <div class="ms-company">Toast · 两个关键增长项目</div>
+        <div class="ms-desc">Haas for Toast Hardware——大规模硬件机会；Meraki-to-Pronto——优化支持体系，减少摩擦。每一个项目，都是从混沌中找到清晰路径。</div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="ms-year"><span>下一步</span></div>
+      <div class="ms-content">
+        <div class="ms-role">VP · 下一个台阶</div>
+        <div class="ms-company">故事还在继续</div>
+        <div class="ms-desc">在更大的舞台上，用同样的方式：<strong>看得远，落得准，带得动人。</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOAST STRATEGY -->
+<section class="section section-mid" id="toast">
+  <div class="story-grid">
+    <div class="story-left">
+      <div class="sec-tag gold reveal">Toast · 战略项目</div>
+      <h2 class="sec-headline light reveal">
+        从混沌里<br>找到<em>路径</em>
+      </h2>
+    </div>
+    <div class="story-right">
+      <div class="prose light reveal">
+        <p>在Toast，我带领的不只是项目——是一场场把模糊变清晰、把阻力变动力的战役。</p>
+        <p><strong>Haas for Toast Hardware</strong>——一个大规模的硬件增长机会。从市场分析到执行框架，从跨部门对齐到客户落地。每一步都需要在不确定中做出清醒的判断。</p>
+        <p><strong>Meraki-to-Pronto</strong>——把一个复杂的系统迁移，变成减少支持摩擦、提升用户体验的机会。这需要的不只是技术判断，是<em>对人的理解</em>。</p>
+        <p>我发现，最好的战略，往往不是最精妙的——是最能被人理解和执行的。</p>
+      </div>
+      <div class="pull on-dark reveal">
+        <p>战略不是PPT，<br><strong>战略是让每个人都知道今天要做什么。</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTUITION-DRIVEN LEADERSHIP -->
+<section class="section section-dark" id="intuition">
+  <div class="story-grid">
+    <div class="story-left">
+      <div class="sec-tag gold reveal">领导力哲学</div>
+      <h2 class="sec-headline light reveal">
+        直觉，是<em>另一种</em><br>战略工具
+      </h2>
+    </div>
+    <div class="story-right">
+      <div class="prose light reveal">
+        <p>大多数人把"直觉"和"战略"放在对立面——要么数据说话，要么凭感觉走。我不这么认为。</p>
+        <p>在科技行业十几年，我见过太多精密的模型做出错误的决策，也见过一个"不对劲"的感觉救了整个项目。<em>直觉，是经验在身体里沉淀下来的语言。</em></p>
+        <p>我的领导方式，是让这两种力量同时工作——<strong>用数据建立地图，用直觉判断走哪条路</strong>。当会议室里所有人都在争论数字，我在听那个没人说出口的东西。</p>
+        <p>这不是玄学。这是一种需要刻意培养的能力：静下来，听见信号，然后有勇气说出来。</p>
+      </div>
+      <div class="pull on-dark reveal">
+        <p>最好的决策，往往不是<br>最理性的那个——<br>而是<strong>理性和直觉同时说"是"</strong>的那个。</p>
+      </div>
+      <div class="prose light reveal">
+        <p>这种能力在高压、模糊、快速变化的环境里尤其珍贵。当没有完美答案的时候，<strong>你需要一个能读懂房间、读懂市场、读懂人心的领导者</strong>——而不只是一个会做PPT的人。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORLD CLASS PRODUCT -->
+<section class="section section-light" id="product">
+  <div class="story-grid">
+    <div class="story-left">
+      <div class="sec-tag terra reveal">产品与客户</div>
+      <h2 class="sec-headline dark reveal">
+        先去<em>餐厅里</em><br>站一天
+      </h2>
+    </div>
+    <div class="story-right">
+      <div class="prose dark reveal">
+        <p>在Toast，我们做的是餐饮行业的科技产品。但我从来不相信坐在办公室里能做出真正好的产品。</p>
+        <p>我会去餐厅。站在前台旁边，看服务员怎么用系统，看哪里卡住了，听老板在说什么。<strong>那些细节，是任何用户调研报告都给不了你的。</strong></p>
+        <p>正是这种实地感知，让我们做出的产品能真正解决问题——不是我们以为的问题，是<em>餐厅真实承受的痛</em>。</p>
+      </div>
+      <div class="pull on-light reveal">
+        <p>World class 的产品，<br>从来不是在会议室设计出来的。<br>是在<strong>真实的人、真实的场景</strong>里磨出来的。</p>
+      </div>
+      <div class="prose dark reveal">
+        <p>Toast 的产品今天已经风靡美国、加拿大和欧洲。背后是无数次这样的实地观察，无数次"这里不对，我们重新来"的勇气，和一个核心信念：</p>
+        <p><strong>做产品，就是在做对人的理解。</strong>理解得越深，产品就越有力量。</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:rgba(14,12,10,0.08); margin-top:48px;">
+        <div style="background:var(--paper); padding:28px 24px; text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; color:var(--ink); line-height:1;">🇺🇸</div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--warm-mid); margin-top:10px;">美国</div>
+        </div>
+        <div style="background:var(--paper); padding:28px 24px; text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; color:var(--ink); line-height:1;">🇨🇦</div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--warm-mid); margin-top:10px;">加拿大</div>
+        </div>
+        <div style="background:var(--paper); padding:28px 24px; text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; color:var(--ink); line-height:1;">🇬🇧</div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--warm-mid); margin-top:10px;">欧洲</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section section-warm" id="team">
+  <div class="sec-tag moss reveal">带团队</div>
+  <h2 class="sec-headline dark reveal" style="margin-bottom:24px;">
+    柠檬树和<em>ZZ plant</em>
+  </h2>
+  <p class="reveal" style="font-size:17px; line-height:1.9; color:#5a4f45; max-width:640px; margin-bottom:60px;">
+    我把带团队，想成养植物。柠檬树喜欢阳光和水，仙人掌水浇多了不开心，ZZ plant 你不用怎么管它总是绿油油的。<strong>每个人都不一样，你能做的就是用心发现他们的特性，然后尊重它。</strong>
+  </p>
+  <div class="philosophy-grid">
+    <div class="phil-card reveal">
+      <span class="phil-icon">🌱</span>
+      <div class="phil-title">看见每个人</div>
+      <div class="phil-body">不是把所有人变成一样的，是发现每个人最有力量的地方，然后让他们在那里发光。</div>
+    </div>
+    <div class="phil-card reveal">
+      <span class="phil-icon">⏳</span>
+      <div class="phil-title">种下种子，耐心等待</div>
+      <div class="phil-body">你要做一件事，往往能做的就是好好种一颗种子，然后耐心等待它发芽。不是不管，是不急。</div>
+    </div>
+    <div class="phil-card reveal">
+      <span class="phil-icon">🧭</span>
+      <div class="phil-title">清醒比聪明更重要</div>
+      <div class="phil-body">在高压下保持清醒，知道什么是真正重要的——这是我认为领导者最核心的能力。</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAVE MOMENTS -->
+<section class="section section-light" id="brave">
+  <div class="sec-tag terra reveal">职场里的勇敢时刻</div>
+  <h2 class="sec-headline dark reveal" style="margin-bottom:60px;">
+    害怕了，<em>还是上了</em>
+  </h2>
+  <div class="brave-grid">
+    <div class="brave-card reveal">
+      <div class="bc-num">01</div>
+      <div class="bc-title">用英语吵赢第一份工作</div>
+      <div class="bc-body">25岁，插队被发现，不道歉，反而用英语跟招聘官吵了一架。吵赢了，也拿到了工作。从那天起她知道，气势这件事，可以是工具。</div>
+    </div>
+    <div class="brave-card reveal">
+      <div class="bc-num">02</div>
+      <div class="bc-title">6天，拿下MIT</div>
+      <div class="bc-body">27岁，想干就干。6天准备MBA申请，自信满满走进面试室。不是因为不紧张，是因为她知道自己值得。</div>
+    </div>
+    <div class="brave-card reveal">
+      <div class="bc-num">03</div>
+      <div class="bc-title">在混沌中带领团队</div>
+      <div class="bc-body">当没有人知道答案的时候，有人要先站出来说"我们这样走"。真真选择做那个人——不是因为最确定，是因为团队需要方向。</div>
+    </div>
+    <div class="brave-card reveal">
+      <div class="bc-num">04</div>
+      <div class="bc-title">选择真实，而不是完美</div>
+      <div class="bc-body">在需要"表演领导力"的场合，她选择说真话。说"我不知道"，说"我们需要重新想"，说"这个决定我来承担"。这，才是真正的力量。</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <div class="closing-rings">
+    <div class="ring" style="width:400px;height:400px;"></div>
+    <div class="ring" style="width:700px;height:700px;"></div>
+    <div class="ring" style="width:1000px;height:1000px;"></div>
+  </div>
+  <div class="closing-inner">
+    <div class="sec-tag gold reveal" style="justify-content:center;">一起做点什么</div>
+    <h2 class="closing-headline reveal">
+      你有个想法
+      <em>我们来聊</em>
+    </h2>
+    <p class="closing-body reveal">
+      演讲邀约、高管教练、战略顾问——或者你只是想<strong>和一个真实的领导者喝杯咖啡</strong>。
+    </p>
+    <a href="/cdn-cgi/l/email-protection#a9c5dccad087dec8c7cee9dac5c6c8c787c4c0dd87cccddc" class="btn-gold reveal">发邮件给我 →</a>
+  </div>
+</section>
+
+<div class="page-footer-nav">
+  <a href="index.html" class="pfn-link">← 返回主页</a>
+  <span class="pfn-sig">真真 · 女将</span>
+  <a href="writing.html" class="pfn-link">去看文字 →</a>
+</div>
+
+<footer>
+  <div class="footer-name">真真</div>
+  <div class="footer-copy">© 2026 · 真真女将</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    ring.style.left = mx + 'px';
+    ring.style.top = my + 'px';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i 
