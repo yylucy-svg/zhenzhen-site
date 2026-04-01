@@ -387,9 +387,12 @@
     background: var(--cream);
     padding: 56px 44px;
     transition: background 0.4s ease, color 0.4s ease;
-    cursor: default;
+    cursor: pointer;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
   }
   .pillar::before {
     content: '';
@@ -402,9 +405,18 @@
     transition: transform 0.4s ease;
   }
   .pillar:hover { background: var(--ink); color: var(--cream); }
+  .pillar:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+    background: var(--ink);
+    color: var(--cream);
+  }
   .pillar:hover::before { transform: scaleX(1); }
+  .pillar:focus-visible::before { transform: scaleX(1); }
   .pillar:hover .pillar-number { color: var(--gold); }
+  .pillar:focus-visible .pillar-number { color: var(--gold); }
   .pillar:hover .pillar-body { color: var(--warm-gray); }
+  .pillar:focus-visible .pillar-body { color: var(--warm-gray); }
 
   .pillar-number {
     font-family: 'Space Mono', monospace;
@@ -726,30 +738,30 @@
     </div>
   </div>
   <div class="pillars">
-    <div class="pillar reveal">
+    <a class="pillar reveal" href="career.html" aria-label="查看战略领导力板块">
       <div class="pillar-number">01</div>
       <span class="pillar-icon">⚡</span>
       <h3 class="pillar-title">战略领导力</h3>
       <p class="pillar-body">
         将远见转化为执行，把团队的潜力激活为结果。在高速成长的科技行业中，我擅长建立信任、推动变革，让复杂的事情变得简单而有力。
       </p>
-    </div>
-    <div class="pillar reveal">
+    </a>
+    <a class="pillar reveal" href="writing.html" aria-label="查看写作与创意表达板块">
       <div class="pillar-number">02</div>
       <span class="pillar-icon">✍️</span>
       <h3 class="pillar-title">写作与创意表达</h3>
       <p class="pillar-body">
         文字是我思考的延伸。无论是战略备忘录、公开演讲，还是个人故事——我相信真实的声音最有力量，能穿越噪音，直抵人心。
       </p>
-    </div>
-    <div class="pillar reveal">
+    </a>
+    <a class="pillar reveal" href="timeline.html" aria-label="查看个人品牌与故事板块">
       <div class="pillar-number">03</div>
       <span class="pillar-icon">🌟</span>
       <h3 class="pillar-title">个人品牌与故事</h3>
       <p class="pillar-body">
         你的故事，就是你的名片。我帮助自己、也帮助他人，把人生经历提炼成清晰的叙事——让世界看见你最真实、最有力量的那一面。
       </p>
-    </div>
+    </a>
   </div>
 </section>
 
