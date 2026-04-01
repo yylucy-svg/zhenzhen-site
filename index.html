@@ -118,6 +118,7 @@
     padding: 0 60px 80px;
     position: relative;
     overflow: hidden;
+    background: var(--ink);
   }
 
   .hero-bg-text {
@@ -643,6 +644,9 @@
     <li><a href="#about">关于</a></li>
     <li><a href="#work">领域</a></li>
     <li><a href="#talk">演讲</a></li>
+    <li><a href="writing.html">文字</a></li>
+    <li><a href="career.html">女将</a></li>
+    <li><a href="timeline.html">成长线</a></li>
     <li><a href="#contact">联系</a></li>
   </ul>
 </nav>
@@ -780,6 +784,40 @@
   </div>
 </section>
 
+<!-- EXPLORE -->
+<section id="writing" style="background: #1a1208; padding: 120px 60px;">
+  <div class="reveal" style="font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:16px;">
+    <span style="display:inline-block;width:40px;height:1px;background:var(--gold);flex-shrink:0;"></span>
+    探索更多
+  </div>
+  <h2 class="reveal" style="font-family:'Playfair Display',serif; font-size:clamp(36px,4.5vw,62px); font-weight:700; line-height:1.1; color:var(--cream); margin-bottom:64px;">
+    真真的<em style="color:var(--gold);font-style:italic;">世界</em>
+  </h2>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:rgba(201,147,58,0.1);">
+    <a href="writing.html" class="reveal" style="display:block; text-decoration:none; background:#1a1208; padding:52px 40px; border:1px solid rgba(201,147,58,0.1); transition:border-color 0.3s;"
+       onmouseover="this.style.borderColor='rgba(201,147,58,0.35)'" onmouseout="this.style.borderColor='rgba(201,147,58,0.1)'">
+      <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:16px;">文字 · Writing</div>
+      <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--cream); line-height:1.2; margin-bottom:16px;">向阳而生<br>我爱我</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--warm-gray);">散文、诗、宣言。写给自己，也写给你。</div>
+      <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); margin-top:28px; letter-spacing:0.15em;">进入 →</div>
+    </a>
+    <a href="career.html" class="reveal" style="display:block; text-decoration:none; background:#1a1208; padding:52px 40px; border:1px solid rgba(201,147,58,0.1); transition:border-color 0.3s;"
+       onmouseover="this.style.borderColor='rgba(201,147,58,0.35)'" onmouseout="this.style.borderColor='rgba(201,147,58,0.1)'">
+      <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--rust); margin-bottom:16px;">事业 · Career</div>
+      <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--cream); line-height:1.2; margin-bottom:16px;">真真<br>女将</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--warm-gray);">MIT · Toast · 从零到高管的故事。</div>
+      <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); margin-top:28px; letter-spacing:0.15em;">进入 →</div>
+    </a>
+    <a href="timeline.html" class="reveal" style="display:block; text-decoration:none; background:#1a1208; padding:52px 40px; border:1px solid rgba(201,147,58,0.1); transition:border-color 0.3s;"
+       onmouseover="this.style.borderColor='rgba(201,147,58,0.35)'" onmouseout="this.style.borderColor='rgba(201,147,58,0.1)'">
+      <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:16px;">成长 · Timeline</div>
+      <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--cream); line-height:1.2; margin-bottom:16px;">小土匪<br>成长线</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--warm-gray);">从未出生到此刻，每一年都是来处。</div>
+      <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); margin-top:28px; letter-spacing:0.15em;">进入 →</div>
+    </a>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-ring"></div>
@@ -794,7 +832,7 @@
     <p class="contact-sub reveal">
       无论是演讲邀约、合作机会，还是你只是想分享一个故事——我在这里，认真倾听。
     </p>
-    <a href="mailto:hello@zhenzhen.com" class="contact-cta reveal">
+    <a href="/cdn-cgi/l/email-protection#c9a1aca5a5a689b3a1aca7b3a1aca7e7aaa6a4" class="contact-cta reveal">
       开启对话 →
     </a>
   </div>
@@ -806,7 +844,7 @@
   <div class="footer-copy">© 2026 · 领导者 · 创作者 · 故事人</div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -831,11 +869,4 @@
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
         setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  reveals.forEach(el => observer.observe(el));
-</script>
-</body>
-</html>
+        o
